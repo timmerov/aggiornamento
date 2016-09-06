@@ -6,7 +6,7 @@
 
 message( "Platform is Unix64." )
 
-set(RAP_LINUX 1)
+set(AM_UNIX 1)
 
 # manage options by changing them in these variables.
 # the debug and release flavors are appended to the generic flavor.

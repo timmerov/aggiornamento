@@ -6,7 +6,7 @@
 
 message("Platform is Win64.")
 
-set(RAP_WINDOWS 1)
+set(AM_WINDOWS 1)
 
 # manage options by changing them in these variables.
 # the debug and release flavors are appended to the generic flavor.
