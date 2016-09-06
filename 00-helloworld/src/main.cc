@@ -10,13 +10,13 @@ hello world example.
 
 
 int main(
-	int argc, char *argv[]
+    int argc, char *argv[]
 ) throw() {
-	(void) argc;
-	(void) argv;
+    (void) argc;
+    (void) argv;
 
-	LOG("Hello, World!");
-	LOG("Goodbye, World!");
+    LOG("Hello, World!");
+    LOG("Goodbye, World!");
 
-	return 0;
+    return 0;
 }

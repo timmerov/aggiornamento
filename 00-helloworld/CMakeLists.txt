@@ -27,7 +27,7 @@ set_target_properties(${THIS_EXE_NAME} PROPERTIES DEBUG_POSTFIX _d)
 
 # add the include directories
 set(INCS
-	${CMAKE_SOURCE_DIR}/agm/inc
+    ${CMAKE_SOURCE_DIR}/agm/inc
 )
 include_directories(${INCS})
 

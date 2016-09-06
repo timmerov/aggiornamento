@@ -31,6 +31,6 @@ set_target_properties(${THIS_LIB_NAME} PROPERTIES DEBUG_POSTFIX _d)
 
 # add the include directores
 set(INCLUDES
-	inc
+    inc
 )
 include_directories(${INCLUDES})

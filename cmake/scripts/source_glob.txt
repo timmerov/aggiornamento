@@ -3,6 +3,6 @@
 #
 
 function(SOURCE_GLOB _GROUP)
-	file(GLOB THIS_GROUP ${ARGN})
-	source_group(${_GROUP} FILES ${THIS_GROUP})
+    file(GLOB THIS_GROUP ${ARGN})
+    source_group(${_GROUP} FILES ${THIS_GROUP})
 endfunction()
