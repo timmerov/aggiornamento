@@ -1,3 +1,3 @@
 #!/bin/bash
 
-. ./cmake/unix64.sh
+. ./cmake/bin/unix64.sh

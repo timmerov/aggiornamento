@@ -1,3 +1,3 @@
 @echo off
 
-call .\cmake\win64.bat
+call .\cmake\bin\win64.bat
