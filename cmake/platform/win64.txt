@@ -1,0 +1,48 @@
+#
+# Copyright (C) 2012-2016 tim cotter. All rights reserved.
+#
+
+# build for windows 64
+
+message("Platform is Win64.")
+
+set(RAP_WINDOWS 1)
+
+# manage options by changing them in these variables.
+# the debug and release flavors are appended to the generic flavor.
+
+# for development...
+# dump the original compile flags.
+#message("default  CMAKE_CXX_FLAGS        =${CMAKE_CXX_FLAGS}")
+#message("default  CMAKE_CXX_FLAGS_DEBUG  =${CMAKE_CXX_FLAGS_DEBUG}")
+#message("default  CMAKE_CXX_FLAGS_RELEASE=${CMAKE_CXX_FLAGS_RELEASE}")
+
+# enable all warnings as errors
+message("-- All warnings are treated as errors.")
+string(REPLACE "/W3" "/W4 /WX" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+
+# disable c++ exceptions
+# well, we'd like to kill exceptions with fire.
+# but we can't.
+# cause the std libs use them extensively.
+# now... if we could recompile the std libs...
+#message("-- C++ exceptions are disabled.")
+#string(REPLACE "/EHsc" "/EHs-c-" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+
+# disable run-time type information
+message("-- Run-time type information is disabled.")
+string(REPLACE "/GR" "/GR-" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+
+# use static runtime libraries
+message("-- Linking with static runtime libraries.")
+string(REPLACE "/MDd" "/MTd" CMAKE_CXX_FLAGS_DEBUG   "${CMAKE_CXX_FLAGS_DEBUG}"  )
+string(REPLACE "/MD"  "/MT"  CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}")
+
+# for development...
+# dump the modified compile flags.
+#message("modified CMAKE_CXX_FLAGS        =${CMAKE_CXX_FLAGS}")
+#message("modified CMAKE_CXX_FLAGS_DEBUG  =${CMAKE_CXX_FLAGS_DEBUG}")
+#message("modified CMAKE_CXX_FLAGS_RELEASE=${CMAKE_CXX_FLAGS_RELEASE}")
+
+# set the platform type
+add_definitions(/DAM_WINDOWS)
