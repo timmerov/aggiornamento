@@ -17,5 +17,5 @@ include("${THIS_CMAKE_DIR}/scripts/source_glob.txt")
 cmake_minimum_required(VERSION ${THIS_CMAKE_VERSION})
 
 # add the targets
-add_subdirectory(amlib)
+add_subdirectory(agm)
 add_subdirectory(00-helloworld)

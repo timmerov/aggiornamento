@@ -27,12 +27,12 @@ set_target_properties(${THIS_EXE_NAME} PROPERTIES DEBUG_POSTFIX _d)
 
 # add the include directories
 set(INCS
-	${CMAKE_SOURCE_DIR}/amlib/inc
+	${CMAKE_SOURCE_DIR}/agm/inc
 )
 include_directories(${INCS})
 
 # add the libraries
 set(LIBS
-    amlib
+    agm
 )
-target_link_libraries(${LIBS})
+target_link_libraries(${THIS_EXE_NAME} ${LIBS})

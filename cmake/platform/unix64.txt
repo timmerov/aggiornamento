@@ -4,9 +4,9 @@
 
 # build for unix 64
 
-message( "Platform is Unix64." )
+message("Platform is Unix64.")
 
-set(AM_UNIX 1)
+set(AGM_UNIX 1)
 
 # manage options by changing them in these variables.
 # the debug and release flavors are appended to the generic flavor.
@@ -36,4 +36,4 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 #message("modified CMAKE_CXX_FLAGS_RELEASE=${CMAKE_CXX_FLAGS_RELEASE}")
 
 # set the platform type
-add_definitions(/DAM_UNIX)
+add_definitions(/DAGM_UNIX)
