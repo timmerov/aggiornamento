@@ -194,6 +194,66 @@ namespace agm {
             return ret;
         }
     }
+
+    class Thread {
+        Thread() throw();
+        Thread(const Thread &) = delete;
+        virtual ~Thread() throw();
+
+        // starts the thread and
+        // waits for its begin function to return.
+        // the thread is then blocked.
+        void init() throw();
+
+        // tells the thread to start producing.
+        // the thread is unblocked.
+        // its run function is called.
+        void startProducing() throw();
+
+        // tells the thread to stop producing data.
+        // waits for the run function to return.
+        // the thread's drain function is called.
+        void stopProducing() throw();
+
+        // tells the thread to stop draining data.
+        // waits for the thread to exit.
+        void stopCompletely() throw();
+    };
+
+    class Thread {
+    protected:
+        Thread() throw();
+    public:
+        Thread(const Thread &) = delete;
+        virtual ~Thread() throw();
+
+        // perform initialization.
+        // like allocate memory.
+        // do not produce nor consume data.
+        virtual void begin() throw() {
+        }
+
+        // default implementation is to call
+        // runOnce as long as isRunning is true;
+        virtual void run() throw();
+
+        // call by the default implementation of run
+        // as long as isRunning is true.
+        virtual void runOnce() throw() = 0;
+
+        // default implementation is to call
+        // drainOnce as long as isDraining is true;
+        virtual void drain() throw();
+
+        // call by the default implementation of drain
+        // as long as isDraining is true.
+        virtual void drainOnce() throw() = 0;
+
+        // perform de-initialization.
+        // like free memory.
+        // do not produce nor consume data.
+        virtual void end() throw() {
+    };
 }
 
 // clever use of a lock to serialize logging.

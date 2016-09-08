@@ -10,7 +10,11 @@ into and take things out of a trunk.
 */
 
 #include <aggiornamento/aggiornamento.h>
+#include <container/trunk.h>
 
+
+extern agm::Thread *createAlice(Trunk *trunk);
+extern agm::Thread *createBob(Trunk *trunk);
 
 int main(
     int argc, char *argv[]
@@ -18,8 +22,16 @@ int main(
     (void) argc;
     (void) argv;
 
-    LOG("Hello, World!");
-    LOG("Goodbye, World!");
+    auto trunk = Trunk::create();
+    auto alice = createAlice(trunk);
+    auto bob = createBob(trunk);
+
+    alice->start();
+    bob->start();
+    alice->stopProducing();
+    bob->stopProducing();
+    alice->stopCompletely();
+    bob->stopCompletely();
 
     return 0;
 }

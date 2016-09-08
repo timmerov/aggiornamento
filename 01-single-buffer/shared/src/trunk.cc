@@ -7,25 +7,48 @@ single buffer example.
 trunk container implementation.
 */
 
+#include <aggiornamento/aggiornamento.h>
 #include <container/trunk.h>
 
+#include <mutex>
 
-void agm::master::init() throw() {
+
+// use an anonymous namespace to avoid name collisions at link time.
+namespace {
+    class TrunkImpl : public Trunk {
+    public:
+        TrunkImpl() = default;
+        TrunkImpl(const TrunkImpl &) = delete;
+        virtual ~TrunkImpl() = default;
+
+        std::mutex mutex_;
+        char data_[kMaxStringSize];
+    };
 }
 
-void agm::master::exit() throw() {
+Trunk::Trunk() {
 }
 
-void agm::trunk::putString(
+Trunk::~Trunk() {
+}
+
+Trunk *Trunk::create() throw() {
+    return new(std::nothrow) TrunkImpl;
+}
+
+void Trunk::putString(
     const char *buffer
 ) throw() {
-    (void) buffer;
+    auto impl = (TrunkImpl *) this;
+    std::lock_guard<std::mutex> lock(impl->mutex_);
+    agm::string::copy(impl->data_, buffer);
 }
 
-void agm::trunk::getString(
+void Trunk::getString(
     char *buffer,
     int size
-) throw() {
-    (void) buffer;
-    (void) size;
+) const throw() {
+    auto impl = (TrunkImpl *) this;
+    std::lock_guard<std::mutex> lock(impl->mutex_);
+    agm::string::copy(buffer, size, impl->data_);
 }
