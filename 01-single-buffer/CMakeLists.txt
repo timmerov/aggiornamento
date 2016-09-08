@@ -5,16 +5,16 @@
 # search for "you need to"
 
 # you need to set these:
-set(THIS_EXE_NAME helloworld)
+set(THIS_EXE_NAME single-buffer)
 
 # log it
 message("-- Adding executable ${THIS_EXE_NAME}...")
 
 # gather the source files.
-file(GLOB_RECURSE THIS_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cc)
+file(GLOB_RECURSE THIS_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/*.cc)
 
 # gather the header files.
-file(GLOB_RECURSE THIS_HEADERS ${CMAKE_CURRENT_SOURCE_DIR}/src/*.h)
+file(GLOB_RECURSE THIS_HEADERS ${CMAKE_CURRENT_SOURCE_DIR}/*.h)
 
 # add the executable with source and includes in separate groups
 add_executable(${THIS_EXE_NAME} ${THIS_SOURCE} ${THIS_HEADERS})
@@ -24,6 +24,7 @@ set_target_properties(${THIS_EXE_NAME} PROPERTIES DEBUG_POSTFIX _d)
 
 # add the include directories
 set(INCS
+    ${CMAKE_CURRENT_SOURCE_DIR}/shared
     ${CMAKE_SOURCE_DIR}/agm/inc
 )
 include_directories(${INCS})

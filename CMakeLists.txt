@@ -10,7 +10,6 @@ set(THIS_CMAKE_DIR "${CMAKE_SOURCE_DIR}/cmake")
 
 # cmake boilerplate
 include("${THIS_CMAKE_DIR}/scripts/preamble.txt")
-include("${THIS_CMAKE_DIR}/scripts/source_glob.txt")
 
 # more cmake boilerplate
 # unfortunately, we can't put this in preamble.
@@ -19,3 +18,4 @@ cmake_minimum_required(VERSION ${THIS_CMAKE_VERSION})
 # add the targets
 add_subdirectory(agm)
 add_subdirectory(00-helloworld)
+add_subdirectory(01-single-buffer)
