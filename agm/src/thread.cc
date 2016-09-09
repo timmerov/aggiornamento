@@ -3,6 +3,7 @@ Copyright (C) 2012-2016 tim cotter. All rights reserved.
 */
 
 /*
+implementation of thread utilities.
 */
 
 #include <aggiornamento/aggiornamento.h>
