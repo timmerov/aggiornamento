@@ -1,10 +1,6 @@
 #!/bin/bash
 set -eo pipefail
 
-if [ -n "CASTAR_CMAKE_EXE" ]; then
-	CASTAR_CMAKE_EXE=cmake
-fi
-
 TARGET_CPU=unix64
 BUILD_DIR_DEBUG=build-$TARGET_CPU-debug
 BUILD_DIR_RELEASE=build-$TARGET_CPU-release

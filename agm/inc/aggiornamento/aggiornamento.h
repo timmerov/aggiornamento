@@ -2,7 +2,7 @@
 Copyright (C) 2012-2016 tim cotter. All rights reserved.
 */
 
-/*
+/**
 collection of utilities and platform wrappers
 that should be part of the standard libraries
 but aren't.
@@ -55,14 +55,14 @@ but aren't.
 
 // this is a good thing from microsoft.
 #if defined(AGM_WINDOWS)
-#define PAL_OVERRIDE override
+#define AGM_OVERRIDE override
 #else
-#define PAL_OVERRIDE
+#define AGM_OVERRIDE
 #endif
 
 namespace agm {
 // the stupid. it hurts.
-#if defined(CASTAR_WINDOWS)
+#if defined(AGM_WINDOWS)
     typedef int8_t   int8;
     typedef uint8_t  uint8;
     typedef int16_t  int16;
@@ -106,16 +106,20 @@ namespace agm {
     }
 
     namespace string {
-        // safe string copy.
-        // dst will be null terminated.
-        // excess characters in src will be truncated.
-        // custom implementation.
+        /*
+        safe string copy.
+        dst will be null terminated.
+        excess characters in src will be truncated.
+        custom implementation.
+        */
         void copy(char *dst, int dst_size, const char *src) throw();
 
-        // safe string copy that uses template magic to divine the size parameter.
-        // personally, i hate templates.
-        // but microsoft does this.
-        // and i'd hate to have to change every place we depend on it.
+        /*
+        safe string copy that uses template magic to divine the size parameter.
+        personally, i hate templates.
+        but microsoft does this.
+        and i'd hate to have to change every place we depend on it.
+        */
         template <int size>
         void copy(
            char (&dst)[size],
@@ -124,16 +128,20 @@ namespace agm {
             agm::string::copy(dst, size, src);
         }
 
-        // safe string concatenation.
-        // dst will be null terminated.
-        // excess characters in src will be truncated.
-        // custom implementation.
+        /*
+        safe string concatenation.
+        dst will be null terminated.
+        excess characters in src will be truncated.
+        custom implementation.
+        */
         void cat(char *dst, int dst_size, const char *src) throw();
 
-        // safe string concatenation that uses template magic to divine the size parameter.
-        // personally, i hate templates.
-        // but microsoft does this.
-        // and i'd hate to have to change every place we depend on it.
+        /*
+        safe string concatenation that uses template magic to divine the size parameter.
+        personally, i hate templates.
+        but microsoft does this.
+        and i'd hate to have to change every place we depend on it.
+        */
         template <int size>
         void cat(
            char (&dst)[size],
@@ -142,34 +150,44 @@ namespace agm {
             agm::string::cat(dst, size, src);
         }
 
-        // case insensitve compare
-        // on windows: calls _stricmp
-        // on all other platforms: calls strcasecmp
-        // because microsoft
+        /*
+        case insensitve compare
+        on windows: calls _stricmp
+        on all other platforms: calls strcasecmp
+        because microsoft
+        */
         int compare_case(const char *s1, const char *s2) throw();
 
-        // case insensitve compare
-        // on windows: calls _strnicmp
-        // on all other platforms: calls strncasecmp
-        // because microsoft
+        /*
+        case insensitve compare
+        on windows: calls _strnicmp
+        on all other platforms: calls strncasecmp
+        because microsoft
+        */
         int compare_case(const char *s1, const char *s2, int len) throw();
 
-        // tokenize a string
-        // on windows: calls strtok_s
-        // on all other platforms: calls strtok_r
-        // because microsoft
+        /*
+        tokenize a string
+        on windows: calls strtok_s
+        on all other platforms: calls strtok_r
+        because microsoft
+        */
         char *tokenize(char *token, const char *delimiters, char **context) throw();
 
-        // formatted print a list of arguments
-        // on windows: calls vsprintf_s and _vscprintf
-        // on all other platforms: calls vsnprintf
-        // because microsoft
-        // the return value is the number of characters that would have been
-        // written to sufficiently large buffer.
-        // note this is different from what microsoft's vsprintf_s returns.
+        /*
+        formatted print a list of arguments
+        on windows: calls vsprintf_s and _vscprintf
+        on all other platforms: calls vsnprintf
+        because microsoft
+        the return value is the number of characters that would have been
+        written to sufficiently large buffer.
+        note this is different from what microsoft's vsprintf_s returns.
+        */
         int vprintf(char *buffer, int size, const char *format, va_list args) throw();
 
-        // formatted print a list of arguments
+        /*
+        formatted print a list of arguments
+        */
         template <int size>
         int vprintf(
            char (&buffer)[size],
@@ -179,14 +197,18 @@ namespace agm {
             return agm::string::vprintf(buffer, size, format, args);
         }
 
-        // formatted print
-        // calls agm::string::vprintf on all platforms.
-        // the return value is the number of characters that would have been
-        // written to sufficiently large buffer.
-        // note this is different from what microsoft's vsprintf_s returns.
+        /*
+        formatted print
+        calls agm::string::vprintf on all platforms.
+        the return value is the number of characters that would have been
+        written to sufficiently large buffer.
+        note this is different from what microsoft's vsprintf_s returns.
+        */
         int printf(char *buffer, int size, const char *format, ...) throw();
 
-        // formatted print a list of arguments
+        /*
+        formatted print a list of arguments
+        */
         template <int size>
         int printf(
            char (&buffer)[size],
@@ -202,10 +224,14 @@ namespace agm {
     }
 }
 
-// clever use of a lock to serialize logging.
-// we basically throw a lock and unlock into the stream.
+/*
+clever use of a lock to serialize logging.
+we basically insert a lock and unlock into the stream.
+*/
 std::ostream & operator<<(std::ostream &s, const agm::log::Lock &lock) throw();
 std::ostream & operator<<(std::ostream &s, const agm::log::Unlock &unlock) throw();
 
-// log int's in hexadecimal format
+/*
+log int's in hexadecimal format
+*/
 std::ostream & operator<<(std::ostream &s, const agm::log::AsHex &x) throw();

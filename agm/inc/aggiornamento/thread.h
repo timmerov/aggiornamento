@@ -2,7 +2,7 @@
 Copyright (C) 2012-2016 tim cotter. All rights reserved.
 */
 
-/*
+/**
 thread class implementation.
 
 === caution ===
@@ -51,7 +51,7 @@ stopCompletely
     unblock()
     join
                             end()
-*/
+**/
 
 #pragma once
 

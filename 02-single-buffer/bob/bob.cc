@@ -2,10 +2,10 @@
 Copyright (C) 2012-2016 tim cotter. All rights reserved.
 */
 
-/*
-simple thread example.
-implement the alice thread.
-*/
+/**
+single buffer example.
+implement the bob thread.
+**/
 
 #include <aggiornamento/aggiornamento.h>
 #include <aggiornamento/thread.h>
