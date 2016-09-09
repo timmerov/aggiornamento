@@ -5,6 +5,10 @@ Copyright (C) 2012-2016 tim cotter. All rights reserved.
 /*
 single buffer example.
 trunk container implementation.
+
+the implementation uses a single mutex to protect the data.
+there is no other synchronization.
+there is no signalling.
 */
 
 #include <aggiornamento/aggiornamento.h>

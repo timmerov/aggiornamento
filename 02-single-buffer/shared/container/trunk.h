@@ -7,9 +7,14 @@ single buffer example.
 trunk interface.
 
 anyone can put a string into or copy a string from the trunk.
+
+the string is protected by a lock.
+there is no other synchronization.
+there is no signalling.
 */
 
 #pragma once
+
 
 class Trunk {
 protected:
