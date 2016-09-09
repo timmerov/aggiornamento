@@ -6,7 +6,12 @@ Copyright (C) 2012-2016 tim cotter. All rights reserved.
 collection of utilities and platform wrappers
 that should be part of the standard libraries
 but aren't.
-*/
+
+Note: if this file is very slow to open in codeblocks...
+disable symbols browser.
+[Menu] Settings -> Editor... -> [Icon] Code Completion ->
+    [Tab] Symbols Browser -> [Checkbox] Disable symbols browser
+**/
 
 #pragma once
 
