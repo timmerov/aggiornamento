@@ -7,6 +7,7 @@ hello world example.
 **/
 
 #include <aggiornamento/aggiornamento.h>
+#include <aggiornamento/log.h>
 
 
 int main(
@@ -14,6 +15,8 @@ int main(
 ) throw() {
     (void) argc;
     (void) argv;
+
+    agm::log::init(AGM_TARGET_NAME ".log");
 
     LOG("Hello, World!");
     LOG("Goodbye, World!");

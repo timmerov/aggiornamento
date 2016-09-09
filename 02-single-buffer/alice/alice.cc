@@ -8,6 +8,7 @@ implement the alice thread.
 **/
 
 #include <aggiornamento/aggiornamento.h>
+#include <aggiornamento/log.h>
 #include <aggiornamento/thread.h>
 #include <container/trunk.h>
 

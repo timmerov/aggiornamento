@@ -8,6 +8,7 @@ trunk container implementation.
 */
 
 #include <aggiornamento/aggiornamento.h>
+#include <aggiornamento/string.h>
 #include <container/trunk.h>
 
 #include <mutex>
@@ -36,6 +37,9 @@ Trunk *Trunk::create() throw() {
     return new(std::nothrow) TrunkImpl;
 }
 
+/*
+overwrites whatever was in the trunk.
+*/
 void Trunk::putString(
     const char *buffer
 ) throw() {
@@ -44,6 +48,10 @@ void Trunk::putString(
     agm::string::copy(impl->data_, buffer);
 }
 
+/*
+copies the string from the trunk.
+the string in the trunk is preserved.
+*/
 void Trunk::getString(
     char *buffer,
     int size
