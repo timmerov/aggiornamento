@@ -10,6 +10,7 @@ into and take things out of a trunk.
 **/
 
 #include <aggiornamento/aggiornamento.h>
+#include <aggiornamento/log.h>
 #include <aggiornamento/thread.h>
 #include <container/trunk.h>
 
@@ -22,6 +23,8 @@ int main(
 ) throw() {
     (void) argc;
     (void) argv;
+
+    agm::log::init(AGM_TARGET_NAME ".log");
 
     // create the containers.
     // use unique_ptr so they're deleted at end of scope.

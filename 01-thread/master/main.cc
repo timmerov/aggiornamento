@@ -9,6 +9,7 @@ alice is a thread that counts for 10 seconds.
 **/
 
 #include <aggiornamento/aggiornamento.h>
+#include <aggiornamento/log.h>
 #include <aggiornamento/thread.h>
 
 
@@ -19,6 +20,8 @@ int main(
 ) throw() {
     (void) argc;
     (void) argv;
+
+    agm::log::init(AGM_TARGET_NAME ".log");
 
     // create the thread.
     std::vector<agm::Thread *> threads;
