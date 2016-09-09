@@ -32,11 +32,11 @@ namespace {
 
         Trunk *trunk_ = nullptr;
 
-        void begin() throw() {
+        virtual void begin() throw() {
             LOG_VERBOSE("Bob");
         }
 
-        void run() throw() {
+        virtual void run() throw() {
             std::this_thread::sleep_for(std::chrono::milliseconds(500));
             char buffer[Trunk::kMaxStringSize];
             trunk_->getString(buffer);
@@ -47,16 +47,16 @@ namespace {
             master::waitDone();
         }
 
-        void drainOnce() throw() {
+        virtual void drainOnce() throw() {
             LOG_VERBOSE("Bob");
             std::this_thread::sleep_for(std::chrono::milliseconds(100));
         }
 
-        void unblock() throw() {
+        virtual void unblock() throw() {
             LOG_VERBOSE("Bob");
         }
 
-        void end() throw() {
+        virtual void end() throw() {
             LOG_VERBOSE("Bob");
         }
     };

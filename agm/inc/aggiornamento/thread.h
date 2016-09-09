@@ -3,13 +3,14 @@ Copyright (C) 2012-2016 tim cotter. All rights reserved.
 */
 
 /**
-thread class implementation.
+thread class interface.
 
 === caution ===
 the functions in class are called by different threads.
 a clear violation of the best practices.
 every rule has its exception.
 the functions clearly document the intended calling thread.
+=== caution ===
 
 it's possible to split the master thread api from the
 implementation api.
@@ -28,12 +29,12 @@ master                      thread
 --------------------        --------------------
 init()
     starts thread
-    waits begin_cv
+    waits begin_sem
                             begin()
-                            begin_cv
-                            wait start_cv
+                            signal begin_sem
+                            wait start_sem
 startProducing()
-    set start_cv
+    signal start_sem
                             run()
                                 while isProducing
                                     runOnce()
@@ -41,8 +42,8 @@ startProducing()
 stopProducing()
     isProducing = false
     unblock()
-    wait run_cv
-                            set run_cv
+    wait run_sem
+                            signal run_sem
                             drain()
                                 while isDraining
                                     drainOnce()
@@ -135,14 +136,23 @@ namespace agm {
         utility function
         initialize and run a vector of threads.
         */
-        static void startAll(std::vector<Thread *> threads) throw();
+        static void startAll(std::vector<Thread *> &threads) throw();
 
         /*
         called by master thread.
         utility function
         stop and delete a vector of threads.
         */
-        static void stopAll(std::vector<Thread *> threads) throw();
+        static void stopAll(std::vector<Thread *> &threads) throw();
+
+        /*
+        called by master thread.
+        utility function
+        starts a vector of threads.
+        waits for one of them to stop the master thread.
+        stops them.
+        */
+        static void runAll(std::vector<Thread *> &threads) throw();
 
         /**** api for the created thread ****/
 

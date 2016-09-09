@@ -2,12 +2,61 @@
 Copyright (C) 2012-2016 tim cotter. All rights reserved.
 */
 
-/*
-implementation of thread utilities.
-*/
+/**
+thread class implementation.
+
+=== caution ===
+the functions in class are called by different threads.
+a clear violation of the best practices.
+every rule has its exception.
+the functions clearly document the intended calling thread.
+=== caution ===
+
+it's possible to split the master thread api from the
+implementation api.
+well, almost possible.
+the unblock function is the exception.
+this implementation is easier to understand.
+
+the thread function has four distinct parts called in order.
+    initialize
+    produce and consume data
+    consume and discard (do not produce) data
+    clean up
+
+the thread function operates something like this:
+master                      thread
+--------------------        --------------------
+init()
+    starts thread
+    waits begin_sem
+                            begin()
+                            signal begin_sem
+                            wait start_sem
+startProducing()
+    signal start_sem
+                            run()
+                                while isProducing
+                                    runOnce()
+...                         ...
+stopProducing()
+    isProducing = false
+    unblock()
+    wait run_sem
+                            signal run_sem
+                            drain()
+                                while isDraining
+                                    drainOnce()
+stopCompletely
+    isDraining = false
+    unblock()
+    join
+                            end()
+**/
 
 #include <aggiornamento/aggiornamento.h>
 #include <aggiornamento/log.h>
+#include <aggiornamento/master.h>
 #include <aggiornamento/thread.h>
 
 // pick one
@@ -32,6 +81,7 @@ namespace agm {
         LOG_VERBOSE(thread->getName() << " drain...");
         thread->drain();
         LOG_VERBOSE(thread->getName() << " drain done, end...");
+        thread->is_draining_ = false;
         thread->end();
         LOG_VERBOSE(thread->getName() << " end done");
     }
@@ -60,11 +110,18 @@ void agm::Semaphore::waitPreserve() throw() {
 }
 
 void agm::Semaphore::signal() throw() {
+    /*
+    it sure looks weird to set grab a lock simply
+    to set a boolean.
+    but...
+    other threads depend on this value not changing
+    while they are looking at it.
+    so we can't change it while someone else is
+    holding the lock.
+    */
     {
         std::unique_lock<std::mutex> ul(mutex_);
-        if (value_ == false) {
-            value_ = true;
-        }
+        value_ = true;
     }
     cond_.notify_all();
 }
@@ -118,7 +175,7 @@ void agm::Thread::stopCompletely() throw() {
 }
 
 void agm::Thread::startAll(
-    std::vector<Thread *> threads
+    std::vector<Thread *> &threads
 ) throw() {
     for (auto th: threads) {
         LOG_VERBOSE(th->getName() << " init...");
@@ -133,7 +190,7 @@ void agm::Thread::startAll(
 }
 
 void agm::Thread::stopAll(
-    std::vector<Thread *> threads
+    std::vector<Thread *> &threads
 ) throw() {
     for (auto it = threads.rbegin(); it != threads.rend(); ++it) {
         auto th = *it;
@@ -155,6 +212,14 @@ void agm::Thread::stopAll(
         *it = nullptr;
         LOG_VERBOSE(name << " delete done...");
     }
+}
+
+void agm::Thread::runAll(
+    std::vector<Thread *> &threads
+) throw() {
+    startAll(threads);
+    master::waitDone();
+    stopAll(threads);
 }
 
 bool agm::Thread::isProducing() throw() {

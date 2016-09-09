@@ -11,7 +11,6 @@ into and take things out of a trunk.
 
 #include <aggiornamento/aggiornamento.h>
 #include <aggiornamento/log.h>
-#include <aggiornamento/master.h>
 #include <aggiornamento/thread.h>
 #include <container/trunk.h>
 
@@ -38,9 +37,7 @@ int main(
     threads.push_back(createBob(trunk));
 
     // run the threads.
-    agm::Thread::startAll(threads);
-    master::waitDone();
-    agm::Thread::stopAll(threads);
+    agm::Thread::runAll(threads);
 
     return 0;
 }

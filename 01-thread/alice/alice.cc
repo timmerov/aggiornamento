@@ -5,6 +5,12 @@ Copyright (C) 2012-2016 tim cotter. All rights reserved.
 /**
 simple thread example.
 implement the alice thread.
+
+count to 3 every 0.9 seconds.
+then quit.
+
+technically we don't need to override all of the
+interface funcions.
 **/
 
 #include <aggiornamento/aggiornamento.h>
@@ -31,11 +37,11 @@ namespace {
 
         int counter_ = 0;
 
-        void begin() throw() {
+        virtual void begin() throw() {
             LOG_VERBOSE("Alice");
         }
 
-        void runOnce() throw() {
+        virtual void runOnce() throw() {
             ++counter_;
             LOG("Alice " << counter_);
             if (counter_ >= 3) {
@@ -46,16 +52,16 @@ namespace {
             }
         }
 
-        void drainOnce() throw() {
+        virtual void drainOnce() throw() {
             LOG_VERBOSE("Alice");
-            std::this_thread::sleep_for(std::chrono::milliseconds(900));
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
         }
 
-        void unblock() throw() {
+        virtual void unblock() throw() {
             LOG_VERBOSE("Alice");
         }
 
-        void end() throw() {
+        virtual void end() throw() {
             LOG_VERBOSE("Alice");
         }
     };

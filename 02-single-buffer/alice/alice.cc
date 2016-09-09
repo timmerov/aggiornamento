@@ -32,11 +32,11 @@ namespace {
 
         Trunk *trunk_ = nullptr;
 
-        void begin() throw() {
+        virtual void begin() throw() {
             LOG_VERBOSE("Alice");
         }
 
-        void run() throw() {
+        virtual void run() throw() {
             LOG("Alice puts \"" << kCleanSocks << "\" into the trunk");
             trunk_->putString(kCleanSocks);
             std::this_thread::sleep_for(std::chrono::milliseconds(1500));
@@ -46,16 +46,16 @@ namespace {
             master::setDone();
         }
 
-        void drainOnce() throw() {
+        virtual void drainOnce() throw() {
             LOG_VERBOSE("Alice");
             std::this_thread::sleep_for(std::chrono::milliseconds(100));
         }
 
-        void unblock() throw() {
+        virtual void unblock() throw() {
             LOG_VERBOSE("Alice");
         }
 
-        void end() throw() {
+        virtual void end() throw() {
             LOG_VERBOSE("Alice");
         }
     };
