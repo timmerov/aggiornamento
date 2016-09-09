@@ -65,11 +65,35 @@ stopCompletely
 
 
 namespace agm {
+    class Semaphore {
+    public:
+        Semaphore() = default;
+        Semaphore(const Semaphore &) = delete;
+        ~Semaphore() = default;
+
+        bool test() throw();
+        void waitConsume() throw();
+        void waitPreserve() throw();
+        void signal() throw();
+
+    private:
+        bool value_ = false;
+        std::mutex mutex_;
+        std::condition_variable cond_;
+    };
+
     class Thread {
     public:
-        Thread() throw();
+        Thread(const char *name) throw();
         Thread(const Thread &) = delete;
         virtual ~Thread() throw();
+
+        /**** public api ****/
+
+        /*
+        returns the name of the thread.
+        */
+        std::string getName() const throw();
 
         /**** api for the master thread that creates this thread ****/
 
@@ -122,8 +146,16 @@ namespace agm {
 
         /**** api for the created thread ****/
 
+        /*
+        tells run and drain to stop.
+        */
         bool isProducing() throw();
         bool isDraining() throw();
+
+        /*
+        the thread can stop itself.
+        */
+        void stopProducingSelf() throw();
 
         /**** api that can be implemented by the created thread. ****/
 
@@ -197,11 +229,11 @@ namespace agm {
         }
 
     private:
+        std::string name_;
         std::thread *thread_;
-        std::mutex mutex_;
-        std::condition_variable begin_cv_;
-        std::condition_variable start_cv_;
-        std::condition_variable run_cv_;
+        Semaphore begin_sem_;
+        Semaphore start_sem_;
+        Semaphore run_sem_;
         bool is_producing_;
         bool is_draining_;
 

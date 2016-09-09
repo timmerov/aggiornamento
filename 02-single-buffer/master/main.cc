@@ -11,6 +11,7 @@ into and take things out of a trunk.
 
 #include <aggiornamento/aggiornamento.h>
 #include <aggiornamento/log.h>
+#include <aggiornamento/master.h>
 #include <aggiornamento/thread.h>
 #include <container/trunk.h>
 
@@ -28,15 +29,17 @@ int main(
 
     // create the containers.
     // use unique_ptr so they're deleted at end of scope.
-    std::unique_ptr<Trunk> trunk(Trunk::create());
+    auto trunk = Trunk::create();
+    std::unique_ptr<Trunk> auto_trunk(trunk);
 
     // create the threads.
     std::vector<agm::Thread *> threads;
-    threads.push_back(createAlice(trunk.get()));
-    threads.push_back(createBob(trunk.get()));
+    threads.push_back(createAlice(trunk));
+    threads.push_back(createBob(trunk));
 
+    // run the threads.
     agm::Thread::startAll(threads);
-    std::this_thread::sleep_for(std::chrono::seconds(10));
+    master::waitDone();
     agm::Thread::stopAll(threads);
 
     return 0;

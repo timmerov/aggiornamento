@@ -9,42 +9,54 @@ implement the alice thread.
 
 #include <aggiornamento/aggiornamento.h>
 #include <aggiornamento/log.h>
+#include <aggiornamento/master.h>
 #include <aggiornamento/thread.h>
+
+// pick one
+#undef LOG_VERBOSE
+//#define LOG_VERBOSE LOG
+#define LOG_VERBOSE(...)
 
 
 // use an anonymous namespace to avoid name collisions at link time.
 namespace {
     class Alice : public agm::Thread {
     public:
-        Alice() = default;
+        Alice() throw() : Thread("Alice") {
+        }
 
         virtual ~Alice() throw() {
-            LOG("Alice");
+            LOG_VERBOSE("Alice");
         }
 
         int counter_ = 0;
 
         void begin() throw() {
-            LOG("Alice");
+            LOG_VERBOSE("Alice");
         }
 
         void runOnce() throw() {
             ++counter_;
             LOG("Alice " << counter_);
-            std::this_thread::sleep_for(std::chrono::milliseconds(900));
+            if (counter_ >= 3) {
+                master::setDone();
+                stopProducingSelf();
+            } else {
+                std::this_thread::sleep_for(std::chrono::milliseconds(900));
+            }
         }
 
         void drainOnce() throw() {
-            LOG("Alice");
+            LOG_VERBOSE("Alice");
             std::this_thread::sleep_for(std::chrono::milliseconds(900));
         }
 
         void unblock() throw() {
-            LOG("Alice");
+            LOG_VERBOSE("Alice");
         }
 
         void end() throw() {
-            LOG("Alice");
+            LOG_VERBOSE("Alice");
         }
     };
 }

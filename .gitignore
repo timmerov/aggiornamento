@@ -1,3 +1,4 @@
 build-unix64-debug
 build-unix64-release
 build-win64
+*.log

@@ -9,40 +9,54 @@ implement the alice thread.
 
 #include <aggiornamento/aggiornamento.h>
 #include <aggiornamento/log.h>
+#include <aggiornamento/master.h>
 #include <aggiornamento/thread.h>
 #include <container/trunk.h>
+
+// pick one
+#undef LOG_VERBOSE
+//#define LOG_VERBOSE LOG
+#define LOG_VERBOSE(...)
 
 
 // use an anonymous namespace to avoid name collisions at link time.
 namespace {
+    const auto kCleanSocks = "clean socks";
+
     class Alice : public agm::Thread {
     public:
-        Alice() = default;
-        virtual ~Alice() = default;
-
-        int counter_ = 0;
-
-        void begin() throw() {
-            LOG("Alice");
+        Alice() throw() : Thread("Alice") {
         }
 
-        void runOnce() throw() {
-            ++counter_;
-            LOG("Alice " << counter_);
-            std::this_thread::sleep_for(std::chrono::milliseconds(900));
+        virtual ~Alice() = default;
+
+        Trunk *trunk_ = nullptr;
+
+        void begin() throw() {
+            LOG_VERBOSE("Alice");
+        }
+
+        void run() throw() {
+            LOG("Alice puts \"" << kCleanSocks << "\" into the trunk");
+            trunk_->putString(kCleanSocks);
+            std::this_thread::sleep_for(std::chrono::milliseconds(1500));
+            char buffer[Trunk::kMaxStringSize];
+            trunk_->getString(buffer);
+            LOG("Alice finds \"" << buffer << "\" in the trunk");
+            master::setDone();
         }
 
         void drainOnce() throw() {
-            LOG("Alice");
-            std::this_thread::sleep_for(std::chrono::milliseconds(900));
+            LOG_VERBOSE("Alice");
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
         }
 
         void unblock() throw() {
-            LOG("Alice");
+            LOG_VERBOSE("Alice");
         }
 
         void end() throw() {
-            LOG("Alice");
+            LOG_VERBOSE("Alice");
         }
     };
 }
@@ -50,6 +64,7 @@ namespace {
 agm::Thread *createAlice(
     Trunk *trunk
 ) throw() {
-    (void) trunk;
-    return new(std::nothrow) Alice;
+    auto th = new(std::nothrow) Alice;
+    th->trunk_ = trunk;
+    return th;
 }

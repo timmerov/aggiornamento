@@ -10,6 +10,7 @@ alice is a thread that counts for 10 seconds.
 
 #include <aggiornamento/aggiornamento.h>
 #include <aggiornamento/log.h>
+#include <aggiornamento/master.h>
 #include <aggiornamento/thread.h>
 
 
@@ -27,9 +28,9 @@ int main(
     std::vector<agm::Thread *> threads;
     threads.push_back(createAlice());
 
-    // run the thread for 10 seconds.
+    // run the thread until it's done.
     agm::Thread::startAll(threads);
-    std::this_thread::sleep_for(std::chrono::seconds(10));
+    master::waitDone();
     agm::Thread::stopAll(threads);
 
     return 0;
