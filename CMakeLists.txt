@@ -18,4 +18,5 @@ cmake_minimum_required(VERSION ${THIS_CMAKE_VERSION})
 # add the targets
 add_subdirectory(agm)
 add_subdirectory(00-helloworld)
-add_subdirectory(01-single-buffer)
+add_subdirectory(01-thread)
+add_subdirectory(02-single-buffer)

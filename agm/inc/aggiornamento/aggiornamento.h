@@ -2,6 +2,12 @@
 Copyright (C) 2012-2016 tim cotter. All rights reserved.
 */
 
+/*
+collection of utilities and platform wrappers
+that should be part of the standard libraries
+but aren't.
+*/
+
 #pragma once
 
 // c++ stl
@@ -48,7 +54,7 @@ Copyright (C) 2012-2016 tim cotter. All rights reserved.
 #define STRINGIZE(x) STRINGIZE_(x)
 
 // this is a good thing from microsoft.
-#if defined(CASTAR_WINDOWS)
+#if defined(AGM_WINDOWS)
 #define PAL_OVERRIDE override
 #else
 #define PAL_OVERRIDE

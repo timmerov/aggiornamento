@@ -32,5 +32,6 @@ include_directories(${INCS})
 # add the libraries
 set(LIBS
     agm
+    pthread
 )
 target_link_libraries(${THIS_EXE_NAME} ${LIBS})
