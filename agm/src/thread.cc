@@ -90,8 +90,9 @@ void agm::Thread::stopAll(
     for (auto th: threads) {
         th->stopCompletely();
     }
-    for (auto th: threads) {
+    for (auto &th: threads) {
         delete th;
+        th = nullptr;
     }
 }
 
