@@ -84,15 +84,15 @@ void agm::Thread::startAll(
 void agm::Thread::stopAll(
     std::vector<Thread *> threads
 ) throw() {
-    for (auto th: threads) {
-        th->stopProducing();
+    for (auto th = threads.rbegin(); th != threads.rend(); ++th) {
+        (*th)->stopProducing();
     }
-    for (auto th: threads) {
-        th->stopCompletely();
+    for (auto th = threads.rbegin(); th != threads.rend(); ++th) {
+        (*th)->stopCompletely();
     }
-    for (auto &th: threads) {
-        delete th;
-        th = nullptr;
+    for (auto th = threads.rbegin(); th != threads.rend(); ++th) {
+        delete *th;
+        *th = nullptr;
     }
 }
 
