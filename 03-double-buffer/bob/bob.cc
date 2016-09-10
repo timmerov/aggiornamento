@@ -51,7 +51,11 @@ namespace {
             LOG("Bob swapped buffers.");
             LOG("Bob finds " << ptr << " in the buffer.");
 
-            master::waitDone();
+            LOG("Bob is idle.");
+            std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+            LOG("Bob ends the interaction");
+
+            master::setDone();
         }
 
         virtual void drainOnce() throw() {

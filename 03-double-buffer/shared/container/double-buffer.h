@@ -58,4 +58,15 @@ public:
     swap buffers with the other thread.
     */
     char *swap(const char *buffer) throw();
+
+    /*
+    unblock both threads as if the other thread
+    called swap.
+    there's no way for swap to know if it was
+    called normally or if it returned because
+    it was unblocked.
+    the caller will need to make that determination
+    some other way.
+    */
+    void unblock() throw();
 };

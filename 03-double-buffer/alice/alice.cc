@@ -50,7 +50,15 @@ namespace {
             LOG("Alice swapped buffers.");
             LOG("Alice finds " << ptr << " in the buffer.");
 
-            master::setDone();
+            LOG("Alice wants to swap buffers.");
+            ptr = db_->swap(ptr);
+            if (isProducing()) {
+                LOG("Oops! Alice should not have been able to swap buffers.");
+            } else {
+                LOG("Alice gave up trying to swap buffers.");
+            }
+
+            master::waitDone();
         }
 
         virtual void drainOnce() throw() {
@@ -60,6 +68,11 @@ namespace {
 
         virtual void unblock() throw() {
             LOG_VERBOSE("Alice");
+
+            if (isDraining()) {
+                LOG("Master told alice to give up.");
+                db_->unblock();
+            }
         }
 
         virtual void end() throw() {
