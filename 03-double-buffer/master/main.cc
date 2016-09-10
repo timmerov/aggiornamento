@@ -17,6 +17,11 @@ tbd
 extern agm::Thread *createAlice(DoubleBuffer *db);
 extern agm::Thread *createBob(DoubleBuffer *db);
 
+// use anonymous namespace to avoid collisions at link time.
+namespace {
+    static const int kBufferSize = 100;
+}
+
 int main(
     int argc, char *argv[]
 ) throw() {
@@ -26,7 +31,7 @@ int main(
     agm::log::init(AGM_TARGET_NAME ".log");
 
     // create the containers.
-    auto db = DoubleBuffer::create();
+    auto db = DoubleBuffer::create(kBufferSize);
 
     // use unique_ptr so they're deleted at end of scope.
     std::unique_ptr<DoubleBuffer> auto_0(db);

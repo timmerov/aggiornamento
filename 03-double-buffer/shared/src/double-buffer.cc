@@ -30,8 +30,11 @@ namespace {
         DoubleBufferImpl(const DoubleBufferImpl &) = delete;
         virtual ~DoubleBufferImpl() = default;
 
-        agm::Semaphore sem_[2];
-        char data_[kMaxBufferSize];
+        int size_ = 0;
+        char *data0_ = nullptr;
+        char *data1_ = nullptr;
+        agm::Semaphore sem0_;
+        agm::Semaphore sem1_;
     };
 }
 
@@ -41,28 +44,60 @@ DoubleBuffer::DoubleBuffer() {
 DoubleBuffer::~DoubleBuffer() {
 }
 
-DoubleBuffer *DoubleBuffer::create() throw() {
+DoubleBuffer *DoubleBuffer::create(
+    int size
+) throw() {
     auto impl = new(std::nothrow) DoubleBufferImpl;
+    impl->size_ = size;
+    impl->data0_ = new(std::nothrow) char[size];
+    impl->data1_ = new(std::nothrow) char[size];
     return impl;
 }
 
 /*
-get exclusive access to the buffer.
-blocks if another thread has exclusive access.
+return size of buffer.
+*/
+int DoubleBuffer::getSize() throw() {
+    auto impl = (DoubleBufferImpl *) this;
+    return impl->size_;
+}
+
+/*
+get exclusive access to one of the buffers.
 */
 char *DoubleBuffer::acquire(
     int side
 ) throw() {
-    (void) side;
+    auto impl = (DoubleBufferImpl *) this;
+    if (side == 0) {
+        return impl->data0_;
+    }
+    if (side == 1) {
+        return impl->data1_;
+    }
     return nullptr;
 }
 
 /*
-release the buffer so it can be used by other threads
+swap buffers with the other thread.
 */
 char *DoubleBuffer::swap(
     const char *buffer
 ) throw() {
-    (void) buffer;
+    /*
+    signal this buffer's semaphore.
+    wait for the other buffer's semaphore.
+    */
+    auto impl = (DoubleBufferImpl *) this;
+    if (buffer == impl->data0_) {
+        impl->sem0_.signal();
+        impl->sem1_.waitConsume();
+        return impl->data1_;
+    }
+    if (buffer == impl->data1_) {
+        impl->sem1_.signal();
+        impl->sem0_.waitConsume();
+        return impl->data0_;
+    }
     return nullptr;
 }

@@ -22,8 +22,7 @@ implement the bob thread.
 
 // use an anonymous namespace to avoid name collisions at link time.
 namespace {
-    const auto kDirtyShirt = "dirty shirt";
-    const auto kFood = "food";
+    const auto kSnipsSnails = "snips and snails";
 
     class Bob : public agm::Thread {
     public:
@@ -33,28 +32,26 @@ namespace {
         virtual ~Bob() = default;
 
         DoubleBuffer *db_= nullptr;
+        int size_ = 0;
 
         virtual void begin() throw() {
             LOG_VERBOSE("Bob");
+
+            size_ = db_->getSize();
         }
 
         virtual void run() throw() {
+            LOG("Bob acquires a buffer.");
+            auto ptr = db_->acquire(1);
             std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-            LOG("Bob attempts to open the airlock.");
-            auto ptr = db_->acquire(0);
-            LOG("Bob opens the airlock.");
-            agm::string::copy(ptr, DoubleBuffer::kMaxBufferSize, kFood);
-            std::this_thread::sleep_for(std::chrono::milliseconds(500));
-            LOG("Bob puts " << kFood << " into the airlock.");
-            LOG("Bob closes the airlock.");
+            agm::string::copy(ptr, size_, kSnipsSnails);
+            LOG("Bob puts " << kSnipsSnails << " into the buffer.");
+            LOG("Bob wants to swap buffers.");
             ptr = db_->swap(ptr);
-            LOG("Bob attempts to open the airlock.");
-            LOG("Bob opens the airlock.");
-            LOG("Bob removes " << ptr << " from the airlock.");
-            LOG("Bob closes the airlock.");
-            ptr = db_->swap(ptr);
+            LOG("Bob swapped buffers.");
+            LOG("Bob finds " << ptr << " in the buffer.");
 
-            master::setDone();
+            master::waitDone();
         }
 
         virtual void drainOnce() throw() {

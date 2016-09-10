@@ -22,8 +22,7 @@ implement the alice thread.
 
 // use an anonymous namespace to avoid name collisions at link time.
 namespace {
-    const auto kCleanSocks = "clean socks";
-    const auto kGarbage = "garbage";
+    const auto kSugarSpice = "sugar and spice";
 
     class Alice : public agm::Thread {
     public:
@@ -33,24 +32,25 @@ namespace {
         virtual ~Alice() = default;
 
         DoubleBuffer *db_ = nullptr;
+        int size_ = 0;
 
         virtual void begin() throw() {
             LOG_VERBOSE("Alice");
+
+            size_ = db_->getSize();
         }
 
         virtual void run() throw() {
-            std::this_thread::sleep_for(std::chrono::milliseconds(500));
-            LOG("Alice attempts to open the airlock.");
-            auto ptr = db_->acquire(1);
-            LOG("Alice opens the airlock.");
-            LOG("Alice removed " << ptr << " from the airlock.");
-            agm::string::copy(ptr, DoubleBuffer::kMaxBufferSize, kGarbage);
-            std::this_thread::sleep_for(std::chrono::milliseconds(500));
-            LOG("Alice puts " << kGarbage << " in the airlock.");
-            LOG("Alice closes the airlock.");
+            LOG("Alice acquires a buffer.");
+            auto ptr = db_->acquire(0);
+            agm::string::copy(ptr, size_, kSugarSpice);
+            LOG("Alice puts " << kSugarSpice << " into the buffer.");
+            LOG("Alice wants to swap buffers.");
             ptr = db_->swap(ptr);
+            LOG("Alice swapped buffers.");
+            LOG("Alice finds " << ptr << " in the buffer.");
 
-            master::waitDone();
+            master::setDone();
         }
 
         virtual void drainOnce() throw() {

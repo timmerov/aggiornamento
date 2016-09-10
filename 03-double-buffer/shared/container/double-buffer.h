@@ -40,12 +40,12 @@ public:
     master thread creates the double buffer.
     master thread deletes the double buffer.
     */
-    static DoubleBuffer *create() throw();
+    static DoubleBuffer *create(int size) throw();
 
     /*
-    the string in the airlock is at most this big.
+    returns the size of a buffer.
     */
-    static const int kMaxBufferSize = 100;
+    int getSize() throw();
 
     /*
     get exclusive access to one of the buffers.
@@ -53,7 +53,7 @@ public:
     char *acquire(int side) throw();
 
     /*
-    swaps buffers with the other thread.
+    swap buffers with the other thread.
     */
     char *swap(const char *buffer) throw();
 };
