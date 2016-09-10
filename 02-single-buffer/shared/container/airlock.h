@@ -43,12 +43,12 @@ public:
     master thread creates the airlock.
     master thread deletes the airlock.
     */
-    static Airlock *create() throw();
+    static Airlock *create(int size) throw();
 
     /*
-    the string in the airlock is at most this big.
+    returns the size of the buffer.
     */
-    static const int kMaxBufferSize = 100;
+    int getSize() throw();
 
     /*
     get exclusive access to the buffer.

@@ -21,6 +21,11 @@ in the second part, the put things into and take things out of an airlock.
 extern agm::Thread *createAlice(Airlock *airlock, Trunk *trunk);
 extern agm::Thread *createBob(Airlock *airlock, Trunk *trunk);
 
+// use anonymous namespace to avoid collisions at link time.
+namespace {
+    static const int kBufferSize = 100;
+}
+
 int main(
     int argc, char *argv[]
 ) throw() {
@@ -30,8 +35,8 @@ int main(
     agm::log::init(AGM_TARGET_NAME ".log");
 
     // create the containers.
-    auto airlock = Airlock::create();
-    auto trunk = Trunk::create();
+    auto airlock = Airlock::create(kBufferSize);
+    auto trunk = Trunk::create(kBufferSize);
 
     // use unique_ptr so they're deleted at end of scope.
     std::unique_ptr<Airlock> auto_0(airlock);

@@ -48,7 +48,7 @@ namespace {
             std::this_thread::sleep_for(std::chrono::milliseconds(500));
             LOG("Alice puts " << kGarbage << " in the airlock.");
             LOG("Alice closes the airlock.");
-            db_->release(1);
+            ptr = db_->swap(ptr);
 
             master::waitDone();
         }

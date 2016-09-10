@@ -3,8 +3,8 @@ Copyright (C) 2012-2016 tim cotter. All rights reserved.
 */
 
 /*
-single buffer example.
-airlock container implementation.
+double buffer example.
+implementation
 
 anyone can open the airlock...
 put stuff in or take stuff out...
@@ -43,10 +43,6 @@ DoubleBuffer::~DoubleBuffer() {
 
 DoubleBuffer *DoubleBuffer::create() throw() {
     auto impl = new(std::nothrow) DoubleBufferImpl;
-
-    // release side 1 so side 0 can acquire it.
-    impl->release(1);
-
     return impl;
 }
 
@@ -57,27 +53,16 @@ blocks if another thread has exclusive access.
 char *DoubleBuffer::acquire(
     int side
 ) throw() {
-    if (side != 0 && side != 1) {
-        return nullptr;
-    }
-
-    // wait for THIS side.
-    auto impl = (DoubleBufferImpl *) this;
-    impl->sem_[side].waitConsume();
-    return impl->data_;
+    (void) side;
+    return nullptr;
 }
 
 /*
 release the buffer so it can be used by other threads
 */
-void DoubleBuffer::release(
-    int side
+char *DoubleBuffer::swap(
+    const char *buffer
 ) throw() {
-    if (side != 0 && side != 1) {
-        return;
-    }
-
-    // signal the OTHER side.
-    auto impl = (DoubleBufferImpl *) this;
-    impl->sem_[1-side].signal();
+    (void) buffer;
+    return nullptr;
 }

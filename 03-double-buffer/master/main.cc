@@ -3,12 +3,9 @@ Copyright (C) 2012-2016 tim cotter. All rights reserved.
 */
 
 /**
-single buffer example.
+double buffer example.
 
-this example has two parts.
-alica and bob are thread that use different types of single buffers.
-in the first part, they put things into and take things out of a trunk.
-in the second part, the put things into and take things out of an airlock.
+tbd
 **/
 
 #include <aggiornamento/aggiornamento.h>

@@ -33,18 +33,26 @@ namespace {
 
         virtual ~Bob() = default;
 
-        Airlock *airlock_ = nullptr;
         Trunk *trunk_ = nullptr;
+        int trunk_size_ = 0;
+        char *trunk_buffer_ = nullptr;
+
+        Airlock *airlock_ = nullptr;
+        int airlock_size_ = 0;
 
         virtual void begin() throw() {
             LOG_VERBOSE("Bob");
+
+            trunk_size_ = trunk_->getSize();
+            trunk_buffer_ = new(std::nothrow) char[trunk_size_];
+
+            airlock_size_ = airlock_->getSize();
         }
 
         virtual void run() throw() {
             std::this_thread::sleep_for(std::chrono::milliseconds(500));
-            char buffer[Trunk::kMaxStringSize];
-            trunk_->getString(buffer);
-            LOG("Bob finds " << buffer << " in the trunk");
+            trunk_->getString(trunk_buffer_, trunk_size_);
+            LOG("Bob finds " << trunk_buffer_ << " in the trunk");
             std::this_thread::sleep_for(std::chrono::milliseconds(500));
             LOG("Bob puts " << kDirtyShirt << " into the trunk");
             trunk_->putString(kDirtyShirt);
@@ -53,7 +61,7 @@ namespace {
             LOG("Bob attempts to open the airlock.");
             auto ptr = airlock_->acquire(0);
             LOG("Bob opens the airlock.");
-            agm::string::copy(ptr, Airlock::kMaxBufferSize, kFood);
+            agm::string::copy(ptr, airlock_size_, kFood);
             std::this_thread::sleep_for(std::chrono::milliseconds(500));
             LOG("Bob puts " << kFood << " into the airlock.");
             LOG("Bob closes the airlock.");
@@ -79,6 +87,10 @@ namespace {
 
         virtual void end() throw() {
             LOG_VERBOSE("Bob");
+
+            trunk_size_ = 0;
+            delete[] trunk_buffer_;
+            trunk_buffer_ = nullptr;
         }
     };
 }

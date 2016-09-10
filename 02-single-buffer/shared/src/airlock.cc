@@ -28,10 +28,14 @@ namespace {
     public:
         AirlockImpl() = default;
         AirlockImpl(const AirlockImpl &) = delete;
-        virtual ~AirlockImpl() = default;
 
+        virtual ~AirlockImpl() throw() {
+            delete[] data_;
+        }
+
+        int size_ = 0;
+        char *data_ = nullptr;
         agm::Semaphore sem_[2];
-        char data_[kMaxBufferSize];
     };
 }
 
@@ -41,13 +45,26 @@ Airlock::Airlock() {
 Airlock::~Airlock() {
 }
 
-Airlock *Airlock::create() throw() {
+Airlock *Airlock::create(
+    int size
+) throw() {
     auto impl = new(std::nothrow) AirlockImpl;
+
+    impl->size_ = size;
+    impl->data_ = new(std::nothrow) char[size];
 
     // release side 1 so side 0 can acquire it.
     impl->release(1);
 
     return impl;
+}
+
+/*
+returns the size of the buffer.
+*/
+int Airlock::getSize() throw() {
+    auto impl = (AirlockImpl *) this;
+    return impl->size_;
 }
 
 /*

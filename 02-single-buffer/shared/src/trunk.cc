@@ -24,10 +24,14 @@ namespace {
     public:
         TrunkImpl() = default;
         TrunkImpl(const TrunkImpl &) = delete;
-        virtual ~TrunkImpl() = default;
 
+        virtual ~TrunkImpl() throw() {
+            delete data_;
+        }
+
+        int size_ = 0;
+        char *data_ = nullptr;
         std::mutex mutex_;
-        char data_[kMaxStringSize];
     };
 }
 
@@ -37,8 +41,21 @@ Trunk::Trunk() {
 Trunk::~Trunk() {
 }
 
-Trunk *Trunk::create() throw() {
-    return new(std::nothrow) TrunkImpl;
+Trunk *Trunk::create(
+    int size
+) throw() {
+    auto impl = new(std::nothrow) TrunkImpl;
+    impl->size_ = size;
+    impl->data_ = new(std::nothrow) char[size];
+    return impl;
+}
+
+/*
+return the size of the buffer.
+*/
+int Trunk::getSize() throw() {
+    auto impl = (TrunkImpl *) this;
+    return impl->size_;
 }
 
 /*
@@ -49,7 +66,7 @@ void Trunk::putString(
 ) throw() {
     auto impl = (TrunkImpl *) this;
     std::lock_guard<std::mutex> lock(impl->mutex_);
-    agm::string::copy(impl->data_, buffer);
+    agm::string::copy(impl->data_, impl->size_, buffer);
 }
 
 /*

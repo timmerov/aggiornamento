@@ -33,27 +33,35 @@ namespace {
 
         virtual ~Alice() = default;
 
-        Airlock *airlock_ = nullptr;
         Trunk *trunk_ = nullptr;
+        int trunk_size_ = 0;
+        char *trunk_buffer_ = nullptr;
+
+        Airlock *airlock_ = nullptr;
+        int airlock_size_ = 0;
 
         virtual void begin() throw() {
             LOG_VERBOSE("Alice");
+
+            trunk_size_ = trunk_->getSize();
+            trunk_buffer_ = new(std::nothrow) char[trunk_size_];
+
+            airlock_size_ = airlock_->getSize();
         }
 
         virtual void run() throw() {
             LOG("Alice puts " << kCleanSocks << " into the trunk");
             trunk_->putString(kCleanSocks);
             std::this_thread::sleep_for(std::chrono::milliseconds(1500));
-            char buffer[Trunk::kMaxStringSize];
-            trunk_->getString(buffer);
-            LOG("Alice finds " << buffer << " in the trunk");
+            trunk_->getString(trunk_buffer_, trunk_size_);
+            LOG("Alice finds " << trunk_buffer_ << " in the trunk");
 
             std::this_thread::sleep_for(std::chrono::milliseconds(500));
             LOG("Alice attempts to open the airlock.");
             auto ptr = airlock_->acquire(1);
             LOG("Alice opens the airlock.");
             LOG("Alice removed " << ptr << " from the airlock.");
-            agm::string::copy(ptr, Airlock::kMaxBufferSize, kGarbage);
+            agm::string::copy(ptr, airlock_size_, kGarbage);
             std::this_thread::sleep_for(std::chrono::milliseconds(500));
             LOG("Alice puts " << kGarbage << " in the airlock.");
             LOG("Alice closes the airlock.");
@@ -73,6 +81,10 @@ namespace {
 
         virtual void end() throw() {
             LOG_VERBOSE("Alice");
+
+            trunk_size_ = 0;
+            delete[] trunk_buffer_;
+            trunk_buffer_ = nullptr;
         }
     };
 }

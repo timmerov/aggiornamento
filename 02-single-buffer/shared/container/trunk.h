@@ -29,12 +29,12 @@ public:
     master thread creates the trunk.
     master thread deletes the trunk.
     */
-    static Trunk *create() throw();
+    static Trunk *create(int size) throw();
 
     /*
-    the string in the trunk is at most this big.
+    return the size of the buffer.
     */
-    static const int kMaxStringSize = 100;
+    int getSize() throw();
 
     /*
     overwrites whatever was in the trunk.

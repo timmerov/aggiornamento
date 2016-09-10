@@ -3,7 +3,7 @@ Copyright (C) 2012-2016 tim cotter. All rights reserved.
 */
 
 /**
-single buffer example.
+double buffer example.
 implement the bob thread.
 **/
 
@@ -47,13 +47,12 @@ namespace {
             std::this_thread::sleep_for(std::chrono::milliseconds(500));
             LOG("Bob puts " << kFood << " into the airlock.");
             LOG("Bob closes the airlock.");
-            db_->release(0);
+            ptr = db_->swap(ptr);
             LOG("Bob attempts to open the airlock.");
-            ptr = db_->acquire(0);
             LOG("Bob opens the airlock.");
             LOG("Bob removes " << ptr << " from the airlock.");
             LOG("Bob closes the airlock.");
-            db_->release(0);
+            ptr = db_->swap(ptr);
 
             master::setDone();
         }
