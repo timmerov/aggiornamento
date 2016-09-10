@@ -8,6 +8,8 @@ trunk interface.
 
 anyone can put a string into or copy a string from the trunk.
 
+multiple producers, multiple consumers.
+
 the string is protected by a lock.
 there is no other synchronization.
 there is no signalling.

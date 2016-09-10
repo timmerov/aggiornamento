@@ -6,8 +6,6 @@ Copyright (C) 2012-2016 tim cotter. All rights reserved.
 single buffer example.
 airlock interface.
 
-assumes single producer, single consumer.
-
 the contents of the buffer is protected by two semaphores.
 two threads (0 and 1) alternate ownership of the buffer.
 both threads attempt to acquire the buffer at start.
@@ -32,18 +30,18 @@ acquire 0
 #pragma once
 
 
-class Airlock {
+class DoubleBuffer {
 protected:
-    Airlock();
+    DoubleBuffer();
 public:
-    Airlock(const Airlock &) = delete;
-    virtual ~Airlock();
+    DoubleBuffer(const DoubleBuffer &) = delete;
+    virtual ~DoubleBuffer();
 
     /*
     master thread creates the airlock.
     master thread deletes the airlock.
     */
-    static Airlock *create() throw();
+    static DoubleBuffer *create() throw();
 
     /*
     the string in the airlock is at most this big.
