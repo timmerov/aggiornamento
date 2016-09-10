@@ -5,7 +5,11 @@ Copyright (C) 2012-2016 tim cotter. All rights reserved.
 /**
 double buffer example.
 
-tbd
+two threads alice and bob.
+they each acquire one of the double buffer buffers.
+they each write data to their own buffer.
+then they swap buffers.
+and print what the other put into the buffer.
 **/
 
 #include <aggiornamento/aggiornamento.h>

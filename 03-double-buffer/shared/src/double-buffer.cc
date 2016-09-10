@@ -6,10 +6,26 @@ Copyright (C) 2012-2016 tim cotter. All rights reserved.
 double buffer example.
 implementation
 
-anyone can open the airlock...
-put stuff in or take stuff out...
-then close the airlock.
-which makes it available for the next person.
+assumes single producer, single consumer.
+
+the contents of the buffers are protected by two semaphores.
+two threads (0 and 1) each acquire a different buffer.
+they fill their respective buffer.
+then swap buffers.
+the first to swap blocks until the second swaps.
+
+thread 0        thread 1
+--------        --------
+acquire 0       acquire 1
+copy to buffer  copy to buffer
+delay           delay
+swap
+                swap
+copy to buffer  copy to buffer
+delay           delay
+                swap
+swap
+etc.
 
 the implementation uses two semaphores.
 */
@@ -28,7 +44,11 @@ namespace {
     public:
         DoubleBufferImpl() = default;
         DoubleBufferImpl(const DoubleBufferImpl &) = delete;
-        virtual ~DoubleBufferImpl() = default;
+
+        virtual ~DoubleBufferImpl() throw() {
+            delete[] data0_;
+            delete[] data1_;
+        }
 
         int size_ = 0;
         char *data0_ = nullptr;
