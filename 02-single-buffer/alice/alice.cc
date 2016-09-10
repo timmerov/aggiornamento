@@ -41,7 +41,7 @@ namespace {
         int airlock_size_ = 0;
 
         virtual void begin() throw() {
-            LOG_VERBOSE("Alice");
+            LOG("Alice is in the spaceship at the airlock.");
 
             trunk_size_ = trunk_->getSize();
             trunk_buffer_ = new(std::nothrow) char[trunk_size_];
@@ -67,7 +67,11 @@ namespace {
             LOG("Alice closes the airlock.");
             airlock_->release(1);
 
-            master::waitDone();
+            LOG("Alice is no longer using the airlock.");
+            std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+
+            LOG("Alice ends the interaction.");
+            master::setDone();
         }
 
         virtual void drainOnce() throw() {
@@ -80,7 +84,7 @@ namespace {
         }
 
         virtual void end() throw() {
-            LOG_VERBOSE("Alice");
+            LOG("Alice went home.");
 
             trunk_size_ = 0;
             delete[] trunk_buffer_;

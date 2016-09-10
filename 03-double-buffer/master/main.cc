@@ -10,6 +10,8 @@ they each acquire one of the double buffer buffers.
 they each write data to their own buffer.
 then they swap buffers.
 and print what the other put into the buffer.
+
+also demonstrates how to unblock a thread.
 **/
 
 #include <aggiornamento/aggiornamento.h>

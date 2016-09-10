@@ -41,7 +41,7 @@ namespace {
         int airlock_size_ = 0;
 
         virtual void begin() throw() {
-            LOG_VERBOSE("Bob");
+            LOG("Bob arrives at the airlock.");
 
             trunk_size_ = trunk_->getSize();
             trunk_buffer_ = new(std::nothrow) char[trunk_size_];
@@ -73,7 +73,15 @@ namespace {
             LOG("Bob closes the airlock.");
             airlock_->release(0);
 
-            master::setDone();
+            LOG("Bob attempts to open the airlock.");
+            ptr = airlock_->acquire(0);
+            if (isProducing()) {
+                LOG("Oops! Bob should not have been able to open the airlock.");
+            } else {
+                LOG("Bob gave up trying to open the airlock.");
+            }
+
+            master::waitDone();
         }
 
         virtual void drainOnce() throw() {
@@ -83,10 +91,15 @@ namespace {
 
         virtual void unblock() throw() {
             LOG_VERBOSE("Bob");
+
+            if (isDraining()) {
+                LOG("Master tells bob to give up.");
+                airlock_->release(1);
+            }
         }
 
         virtual void end() throw() {
-            LOG_VERBOSE("Bob");
+            LOG("Bob went home.");
 
             trunk_size_ = 0;
             delete[] trunk_buffer_;
