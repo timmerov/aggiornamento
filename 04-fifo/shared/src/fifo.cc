@@ -107,8 +107,10 @@ char *Fifo::get() throw() {
         std::unique_lock<std::mutex> lock(impl->head_mutex_);
         if (impl->head_ != impl->tail_) {
             ptr = impl->data_[impl->head_];
-            impl->data_[impl->head_] = nullptr;
-            impl->head_ = (impl->head_ + 1) % impl->data_size_;
+            if (ptr) {
+                impl->data_[impl->head_] = nullptr;
+                impl->head_ = (impl->head_ + 1) % impl->data_size_;
+            }
         }
     }
     return ptr;
@@ -123,10 +125,15 @@ char *Fifo::getWait() throw() {
     char *ptr = nullptr;
     {
         std::unique_lock<std::mutex> lock(impl->head_mutex_);
-        while (impl->head_ == impl->tail_) {
+        for(;;) {
+            if (impl->head_ != impl->tail_) {
+                ptr = impl->data_[impl->head_];
+                if (ptr) {
+                    break;
+                }
+            }
             impl->cv_.wait(lock);
         }
-        ptr = impl->data_[impl->head_];
         impl->data_[impl->head_] = nullptr;
         impl->head_ = (impl->head_ + 1) % impl->data_size_;
     }
