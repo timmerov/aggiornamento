@@ -79,6 +79,9 @@ returns false if the fifo is full.
 bool Fifo::put(
     char *ptr
 ) throw() {
+    if (ptr == nullptr) {
+        return false;
+    }
     auto impl = (FifoImpl *) this;
     bool result = false;
     {
