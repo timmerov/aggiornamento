@@ -14,12 +14,12 @@ tbd
 #include <container/fifo.h>
 
 
-extern agm::Thread *createAlice(DoubleBuffer *db);
-extern agm::Thread *createBob(DoubleBuffer *db);
+extern agm::Thread *createAlice(Fifo *db);
+extern agm::Thread *createBob(Fifo *db);
 
 // use anonymous namespace to avoid collisions at link time.
 namespace {
-    static const int kBufferSize = 100;
+    static const int kFifoSize = 100;
 }
 
 int main(
@@ -31,15 +31,15 @@ int main(
     agm::log::init(AGM_TARGET_NAME ".log");
 
     // create the containers.
-    auto db = DoubleBuffer::create(kBufferSize);
+    auto fifo = Fifo::create(kFifoSize);
 
     // use unique_ptr so they're deleted at end of scope.
-    std::unique_ptr<DoubleBuffer> auto_0(db);
+    std::unique_ptr<Fifo> auto_0(fifo);
 
     // create the threads.
     std::vector<agm::Thread *> threads;
-    threads.push_back(createAlice(db));
-    threads.push_back(createBob(db));
+    threads.push_back(createAlice(fifo));
+    threads.push_back(createBob(fifo));
 
     // run the threads.
     agm::Thread::runAll(threads);

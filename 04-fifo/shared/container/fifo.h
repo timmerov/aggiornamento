@@ -12,31 +12,42 @@ tbd
 #pragma once
 
 
-class DoubleBuffer {
+class Fifo {
 protected:
-    DoubleBuffer();
+    Fifo();
 public:
-    DoubleBuffer(const DoubleBuffer &) = delete;
-    virtual ~DoubleBuffer();
+    Fifo(const Fifo &) = delete;
+    virtual ~Fifo();
 
     /*
     master thread creates the double buffer.
     master thread deletes the double buffer.
+
+    Fifo uses a fixed size array of pointers to elements.
+    maxCount is the maximum number of elements the fifo can hold.
     */
-    static DoubleBuffer *create(int size) throw();
+    static Fifo *create(int maxCount) throw();
 
     /*
-    returns the size of a buffer.
+    returns returns maxCount passed to the constructor.
     */
-    int getSize() throw();
+    int getMaxCount() throw();
 
     /*
-    get exclusive access to one of the buffers.
+    add an element to the fifo.
+    returns false if the fifo is full.
     */
-    char *acquire(int side) throw();
+    bool put(char *ptr) throw();
 
     /*
-    swap buffers with the other thread.
+    get an element from the fifo.
+    returns nullptr immediately if the fifo is empty.
     */
-    char *swap(const char *buffer) throw();
+    char *get() throw();
+
+    /*
+    get an element from the fifo.
+    waits for an element to be pushed if the fifo is empty.
+    */
+    char *getWait() throw();
 };

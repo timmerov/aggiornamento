@@ -31,25 +31,28 @@ namespace {
 
         virtual ~Bob() = default;
 
-        DoubleBuffer *db_= nullptr;
+        Fifo *fifo_= nullptr;
         int size_ = 0;
 
         virtual void begin() throw() {
             LOG_VERBOSE("Bob");
-
-            size_ = db_->getSize();
         }
 
         virtual void run() throw() {
-            LOG("Bob acquires a buffer.");
-            auto ptr = db_->acquire(1);
-            std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-            agm::string::copy(ptr, size_, kSnipsSnails);
-            LOG("Bob puts " << kSnipsSnails << " into the buffer.");
-            LOG("Bob wants to swap buffers.");
-            ptr = db_->swap(ptr);
-            LOG("Bob swapped buffers.");
-            LOG("Bob finds " << ptr << " in the buffer.");
+            LOG("Bob checks the fifo.");
+            auto ptr = fifo_->get();
+            if (ptr == nullptr) {
+                LOG("Bob found the fifo empty.");
+            } else {
+                LOG("Oops! Bob found " << ptr << " in the fifo.");
+            }
+            LOG("Bob waits for the fifo.");
+            ptr = fifo_->getWait();
+            if (ptr) {
+                LOG("Bob found " << ptr << " in the fifo.");
+            } else {
+                LOG("Oops! Bob found the fifo empty.");
+            }
 
             master::waitDone();
         }
@@ -70,9 +73,9 @@ namespace {
 }
 
 agm::Thread *createBob(
-    DoubleBuffer *db
+    Fifo *fifo
 ) throw() {
     auto th = new(std::nothrow) Bob;
-    th->db_ = db;
+    th->fifo_ = fifo;
     return th;
 }

@@ -22,7 +22,7 @@ implement the alice thread.
 
 // use an anonymous namespace to avoid name collisions at link time.
 namespace {
-    const auto kSugarSpice = "sugar and spice";
+    const char kMeetingRequest[] = "meeting request";
 
     class Alice : public agm::Thread {
     public:
@@ -31,24 +31,18 @@ namespace {
 
         virtual ~Alice() = default;
 
-        DoubleBuffer *db_ = nullptr;
-        int size_ = 0;
+        Fifo *fifo_ = nullptr;
+        char buffer_[sizeof(kMeetingRequest)];
 
         virtual void begin() throw() {
             LOG_VERBOSE("Alice");
-
-            size_ = db_->getSize();
         }
 
         virtual void run() throw() {
-            LOG("Alice acquires a buffer.");
-            auto ptr = db_->acquire(0);
-            agm::string::copy(ptr, size_, kSugarSpice);
-            LOG("Alice puts " << kSugarSpice << " into the buffer.");
-            LOG("Alice wants to swap buffers.");
-            ptr = db_->swap(ptr);
-            LOG("Alice swapped buffers.");
-            LOG("Alice finds " << ptr << " in the buffer.");
+            std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+            LOG("Alice puts " << kMeetingRequest << " into the fifo.");
+            agm::string::copy(buffer_, kMeetingRequest);
+            fifo_->put(buffer_);
 
             master::setDone();
         }
@@ -69,9 +63,9 @@ namespace {
 }
 
 agm::Thread *createAlice(
-    DoubleBuffer *db
+    Fifo *fifo
 ) throw() {
     auto th = new(std::nothrow) Alice;
-    th->db_ = db;
+    th->fifo_ = fifo;
     return th;
 }
