@@ -9,7 +9,7 @@ The code is NOT production ready. For example, error checking is minimal. Handli
 
 ## Pre-requisites
 
-Install CMake 2.8.11 or later.
+CMake 2.8.11 or later.
 
 ## Status
 
@@ -41,7 +41,7 @@ Demonstrates two implementations of a single buffer.
 
 The first is a trunk. Everyone has access to the trunk which is protected by a mutex. You can only access the trunk when you have exclusive ownership of the mutex.
 
-The second is an airlock. Two threads alternate accessing the airlock. It is protected by two semaphores. One thread opens the airlock and can put things into it and take things out. It signals the other thread when it's done. The other thread can then safely access the contents of the airlock.
+The second is an airlock. Two threads alternate accessing the airlock. It is protected by two semaphores. One thread opens the airlock and can put things into it and take things out of it. The thread signals the other thread when it's done. The other thread can then safely access the contents of the airlock.
 
 ### Double buffer
 
@@ -57,4 +57,4 @@ The message queue pre-allocates as many messages as the system will need. These 
 
 The fifos are implemented as a fixed size circular array of pointers to buffers. Buffers are appended to the tail. Buffers are removed from the head. The head and the tail are protected by separate mutexes to minimize contention. This eliminates contention between producers and consumers. Producers still contend with other producers. And consumers still contend with other consumers.
 
-The technique can be used to implement a more complex data pipeline involving many threads.
+The technique can be used to implement a more complex data pipeline involving many threads by adding more fifos.
