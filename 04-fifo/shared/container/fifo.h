@@ -6,7 +6,18 @@ Copyright (C) 2012-2016 tim cotter. All rights reserved.
 fifo example.
 interface
 
-tbd
+assumes multiple producers, multiple consumers.
+assumes a maximum fixed size.
+
+first in first out.
+put will fail (return false) if the fifo is full.
+put will fail if you pass null.
+uses separate locks for producers and consumers
+to minimize contention.
+producers contend with other producers.
+consumers contend with other consumers.
+producers do not contend with consumers.
+and vice versa.
 */
 
 #pragma once

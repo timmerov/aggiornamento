@@ -6,7 +6,55 @@ Copyright (C) 2012-2016 tim cotter. All rights reserved.
 fifo example.
 implementation
 
-tbd.
+assumes multiple producers, multiple consumers.
+assumes a maximum fixed size.
+
+first in first out.
+put will fail (return false) if the fifo is full.
+put will fail if you pass null.
+uses separate locks for producers and consumers
+to minimize contention.
+producers contend with other producers.
+consumers contend with other consumers.
+producers do not contend with consumers.
+and vice versa.
+
+the usage pattern assumes the caller will never
+try to put more elements into the firo than the
+fifo will hold.
+put will never block.
+
+separating producers and consumers has a pitfall
+that will take a bit of explaining.
+put fundamentally does the following operations:
+    *T = ptr
+    ++T
+these operations are done outside of the consumer lock.
+there's no guarantee that these two operations will be
+performed in this order.
+so get must handle the case where ++T happens before
+ptr is written to T.
+get does not update H unless it gets a valid non-null
+pointer value from *H.
+getWait spin-locks waiting for a valid pointer value
+to appear in *H.
+
+assumption:
+cpus may execute instructions out of order.
+we assume the cpu ingests instructions in order.
+and that all ingested instructions will be completed
+before a thread is suspended for a context switch.
+specifically we have the following special case:
+    *T = ptr
+    context switch
+    ++T
+we assume ptr is written to *T before the context is
+actually switched out.
+get will find H == T and return.
+it will not matter that *H contains a valid pointer.
+
+assumes the library lock and unlock functions contain
+fences that flush the memory write operations.
 */
 
 #include <aggiornamento/aggiornamento.h>
@@ -31,7 +79,7 @@ namespace {
         int data_size_ = 0;
         int head_ = 0;
         int tail_ = 0;
-        char **data_ = nullptr;
+        char * volatile *data_ = nullptr;
         std::mutex head_mutex_;
         std::mutex tail_mutex_;
         std::condition_variable cv_;
@@ -128,15 +176,16 @@ char *Fifo::getWait() throw() {
     char *ptr = nullptr;
     {
         std::unique_lock<std::mutex> lock(impl->head_mutex_);
-        for(;;) {
-            if (impl->head_ != impl->tail_) {
-                ptr = impl->data_[impl->head_];
-                if (ptr) {
-                    break;
-                }
-            }
+        while (impl->head_ != impl->tail_) {
             impl->cv_.wait(lock);
         }
+        /*
+        spin-lock here in case the ++T memory operation in put
+        is completed before the write of ptr to *T.
+        */
+        do {
+            ptr = impl->data_[impl->head_];
+        } while (ptr == nullptr);
         impl->data_[impl->head_] = nullptr;
         impl->head_ = (impl->head_ + 1) % impl->data_size_;
     }
