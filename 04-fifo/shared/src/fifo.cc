@@ -58,7 +58,6 @@ fences that flush the memory write operations.
 */
 
 #include <aggiornamento/aggiornamento.h>
-#include <aggiornamento/string.h>
 #include <aggiornamento/thread.h>
 #include <container/fifo.h>
 
@@ -93,8 +92,8 @@ Fifo::~Fifo() {
 }
 
 /*
-master thread creates the double buffer.
-master thread deletes the double buffer.
+master thread creates the fifo.
+master thread deletes the fifo.
 
 Fifo uses a fixed size array of pointers to elements.
 maxCount is the maximum number of elements the fifo can hold.
@@ -112,7 +111,7 @@ Fifo *Fifo::create(
 }
 
 /*
-returns returns maxCount passed to the constructor.
+returns maxCount passed to the constructor.
 */
 int Fifo::getMaxCount() throw() {
     auto impl = (FifoImpl *) this;

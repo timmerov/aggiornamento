@@ -3,7 +3,7 @@ Copyright (C) 2012-2016 tim cotter. All rights reserved.
 */
 
 /**
-fifo example.
+message queue example.
 
 tbd
 **/
@@ -11,15 +11,16 @@ tbd
 #include <aggiornamento/aggiornamento.h>
 #include <aggiornamento/log.h>
 #include <aggiornamento/thread.h>
-#include <container/fifo.h>
+#include <container/message-queue.h>
 
 
-extern agm::Thread *createAlice(Fifo *db);
-extern agm::Thread *createBob(Fifo *db);
+extern agm::Thread *createAlice(MessageQueue *db);
+extern agm::Thread *createBob(MessageQueue *db);
 
 // use anonymous namespace to avoid collisions at link time.
 namespace {
-    static const int kFifoSize = 100;
+    static const int kMessageSize = 100;
+    static const int kMaxNumMessages = 10;
 }
 
 int main(
@@ -31,15 +32,15 @@ int main(
     agm::log::init(AGM_TARGET_NAME ".log");
 
     // create the containers.
-    auto fifo = Fifo::create(kFifoSize);
+    auto message_queue = MessageQueue::create(kMessageSize, kMaxNumMessages);
 
     // use unique_ptr so they're deleted at end of scope.
-    std::unique_ptr<Fifo> auto_0(fifo);
+    std::unique_ptr<MessageQueue> auto_0(message_queue);
 
     // create the threads.
     std::vector<agm::Thread *> threads;
-    threads.push_back(createAlice(fifo));
-    threads.push_back(createBob(fifo));
+    threads.push_back(createAlice(message_queue));
+    threads.push_back(createBob(message_queue));
 
     // run the threads.
     agm::Thread::runAll(threads);

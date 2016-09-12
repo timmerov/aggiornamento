@@ -15,7 +15,6 @@ the implementation uses two semaphores.
 */
 
 #include <aggiornamento/aggiornamento.h>
-#include <aggiornamento/string.h>
 #include <aggiornamento/thread.h>
 #include <container/airlock.h>
 

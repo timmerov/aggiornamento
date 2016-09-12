@@ -3,7 +3,7 @@ Copyright (C) 2012-2016 tim cotter. All rights reserved.
 */
 
 /**
-fifo example.
+message_queue example.
 implement the bob thread.
 **/
 
@@ -12,7 +12,7 @@ implement the bob thread.
 #include <aggiornamento/master.h>
 #include <aggiornamento/string.h>
 #include <aggiornamento/thread.h>
-#include <container/fifo.h>
+#include <container/message-queue.h>
 
 // pick one
 #undef LOG_VERBOSE
@@ -31,27 +31,29 @@ namespace {
 
         virtual ~Bob() = default;
 
-        Fifo *fifo_= nullptr;
+        MessageQueue *message_queue_= nullptr;
         int size_ = 0;
 
         virtual void begin() throw() {
             LOG_VERBOSE("Bob");
+
+            size_ = message_queue_->getMessageSize();
         }
 
         virtual void run() throw() {
-            LOG("Bob checks the fifo.");
-            auto ptr = fifo_->get();
+            LOG("Bob checks the message_queue.");
+            auto ptr = message_queue_->getMessage();
             if (ptr == nullptr) {
-                LOG("Bob found the fifo empty.");
+                LOG("Bob found the message_queue empty.");
             } else {
-                LOG("Oops! Bob found " << ptr << " in the fifo.");
+                LOG("Oops! Bob found " << ptr << " in the message_queue.");
             }
-            LOG("Bob waits for the fifo.");
-            ptr = fifo_->getWait();
+            LOG("Bob waits for the message_queue.");
+            ptr = message_queue_->getMessageWait();
             if (ptr) {
-                LOG("Bob found " << ptr << " in the fifo.");
+                LOG("Bob found " << ptr << " in the message_queue.");
             } else {
-                LOG("Oops! Bob found the fifo empty.");
+                LOG("Oops! Bob found the message_queue empty.");
             }
 
             master::waitDone();
@@ -73,9 +75,9 @@ namespace {
 }
 
 agm::Thread *createBob(
-    Fifo *fifo
+    MessageQueue *message_queue
 ) throw() {
     auto th = new(std::nothrow) Bob;
-    th->fifo_ = fifo;
+    th->message_queue_ = message_queue;
     return th;
 }

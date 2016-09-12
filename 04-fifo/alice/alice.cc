@@ -3,7 +3,7 @@ Copyright (C) 2012-2016 tim cotter. All rights reserved.
 */
 
 /**
-fifo example.
+message queue example.
 implement the alice thread.
 **/
 
@@ -12,7 +12,7 @@ implement the alice thread.
 #include <aggiornamento/master.h>
 #include <aggiornamento/string.h>
 #include <aggiornamento/thread.h>
-#include <container/fifo.h>
+#include <container/message-queue.h>
 
 // pick one
 #undef LOG_VERBOSE
@@ -31,18 +31,23 @@ namespace {
 
         virtual ~Alice() = default;
 
-        Fifo *fifo_ = nullptr;
-        char buffer_[sizeof(kMeetingRequest)];
+        MessageQueue *message_queue_ = nullptr;
+        int size_ = 0;
 
         virtual void begin() throw() {
             LOG_VERBOSE("Alice");
+
+            size_ = message_queue_->getMessageSize();
         }
 
         virtual void run() throw() {
+            LOG("Alice gets an empty meessage from the queue.");
+            auto ptr = message_queue_->getEmpty();
             std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-            LOG("Alice puts " << kMeetingRequest << " into the fifo.");
-            agm::string::copy(buffer_, kMeetingRequest);
-            fifo_->put(buffer_);
+
+            LOG("Alice puts " << kMeetingRequest << " into the message queue.");
+            agm::string::copy(ptr, size_, kMeetingRequest);
+            message_queue_->putMessage(ptr);
 
             master::setDone();
         }
@@ -63,9 +68,9 @@ namespace {
 }
 
 agm::Thread *createAlice(
-    Fifo *fifo
+    MessageQueue *message_queue
 ) throw() {
     auto th = new(std::nothrow) Alice;
-    th->fifo_ = fifo;
+    th->message_queue_ = message_queue;
     return th;
 }

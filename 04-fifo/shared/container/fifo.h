@@ -31,16 +31,16 @@ public:
     virtual ~Fifo();
 
     /*
-    master thread creates the double buffer.
-    master thread deletes the double buffer.
+    master thread creates the fifo.
+    master thread deletes the fifo.
 
     Fifo uses a fixed size array of pointers to elements.
-    maxCount is the maximum number of elements the fifo can hold.
+    max_count is the maximum number of elements the fifo can hold.
     */
-    static Fifo *create(int maxCount) throw();
+    static Fifo *create(int max_count) throw();
 
     /*
-    returns returns maxCount passed to the constructor.
+    returns max_count passed to the constructor.
     */
     int getMaxCount() throw();
 
