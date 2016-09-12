@@ -56,6 +56,9 @@ namespace {
                 LOG("Oops! Bob found the message_queue empty.");
             }
 
+            LOG("Bob returned the now empty message.");
+            message_queue_->putEmpty(ptr);
+
             master::waitDone();
         }
 

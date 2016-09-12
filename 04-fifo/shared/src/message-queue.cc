@@ -4,12 +4,25 @@ Copyright (C) 2012-2016 tim cotter. All rights reserved.
 
 /*
 fifo example.
-implementation
+message queue implementation
 
+build a message queue from 2 fifos.
+
+usage:
+thread 0        thread 1
+--------        --------
+getEmpty        getMessageWait
+fill it
+putMessage
+                read message
+                putEmpty
+
+create two fifos.
+one for empty messages.
+the other for full messages.
 allocate a chunk of memory.
 divide it up into messages.
-create two fifos.
-one for empty mess
+put all of the messages in the empty fifo.
 */
 
 #include <aggiornamento/aggiornamento.h>

@@ -7,6 +7,15 @@ fifo example.
 message queue interface
 
 build a message queue from 2 fifos.
+
+usage:
+thread 0        thread 1
+--------        --------
+getEmpty        getMessageWait
+fill it
+putMessage
+                read message
+                putEmpty
 */
 
 #pragma once

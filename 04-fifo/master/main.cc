@@ -5,7 +5,7 @@ Copyright (C) 2012-2016 tim cotter. All rights reserved.
 /**
 message queue example.
 
-tbd
+two thread alice and bob exchange messages via a queue.
 **/
 
 #include <aggiornamento/aggiornamento.h>

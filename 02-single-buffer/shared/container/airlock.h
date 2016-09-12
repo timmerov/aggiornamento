@@ -27,6 +27,10 @@ release 0
                 delay
                 release 1
 acquire 0
+
+note: release must always be called when the buffer is acquired.
+for production, you might want to make a fancy c++ class wrapper
+that acquires on construction and releases on destruction.
 */
 
 #pragma once
