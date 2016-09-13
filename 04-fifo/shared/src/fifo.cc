@@ -55,7 +55,7 @@ it will not matter that *H contains a valid pointer.
 
 assumption:
 the compiler won't re-order volatile memory accesses.
-head, tail, and the pointers in the array are volatile.
+tail, and the pointers in the array are volatile.
 so the compiler should emit the instructions for put
 in the desired order.
 
@@ -83,8 +83,8 @@ namespace {
 
         int size_ = 0;
         int head_ = 0;
-        int tail_ = 0;
-        char * volatile *data_ = nullptr;
+        int volatile tail_ = 0;            // must be volatile, see put
+        char * volatile *data_ = nullptr;  // must be volatile, see put
         std::mutex head_mutex_;
         std::mutex tail_mutex_;
         std::condition_variable cv_;
@@ -139,9 +139,26 @@ bool Fifo::put(
     bool result = false;
     {
         std::unique_lock<std::mutex> lock(impl->tail_mutex_);
-        auto new_tail = (impl->tail_ + 1) % impl->size_;
+        auto tail = impl->tail_;
+        auto new_tail = (tail + 1) % impl->size_;
         if (new_tail != impl->head_) {
-            impl->data_[impl->tail_] = ptr;
+            /*
+            data_[n] and tail_ are volatile.
+            the compiler should not change the order of these
+            write operations.
+            which means the cpu should ingest them together
+            or in order.
+            so on a context switch, either...
+            both of them will be retired before the switch.
+            or *T=ptr will be retired and ++T will not.
+            that case is handled in get.
+
+            if the above is wrong...
+            and ++T is retired before a context switch.
+            but *T++ is not...
+            then getWait could be spin-locking for a long time.
+            */
+            impl->data_[tail] = ptr;
             impl->tail_ = new_tail;
             result = true;
         }
@@ -188,11 +205,12 @@ char *Fifo::getWait() throw() {
         spin-lock here in case the ++T memory operation in put
         is completed before the write of ptr to *T.
         */
+        auto head = impl->head_;
         do {
-            ptr = impl->data_[impl->head_];
+            ptr = impl->data_[head];
         } while (ptr == nullptr);
-        impl->data_[impl->head_] = nullptr;
-        impl->head_ = (impl->head_ + 1) % impl->size_;
+        impl->data_[head] = nullptr;
+        impl->head_ = (head + 1) % impl->size_;
     }
     return ptr;
 }
