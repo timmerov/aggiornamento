@@ -43,13 +43,13 @@ The first is a trunk. Everyone has access to the trunk which is protected by a m
 
 The second is an airlock. Two threads alternate accessing the airlock. It is protected by two semaphores. One thread opens the airlock and can put things into it and take things out of it. The thread signals the other thread when it's done. The other thread can then safely access the contents of the airlock.
 
-### Double buffer
+### Double Buffer
 
 Two threads exchange data via a double buffer. The example implementation builds on the airlock from the single buffer example by adding a second buffer.
 
 Each thread initially owns one of the buffers. Each thread can put data into their buffer. When they are done they swap buffers. The first thread to swap blocks until the second thread also swaps.
 
-### Fifo
+### FIFO
 
 This example uses a queue to pass messages from one thread to another.
 
@@ -58,3 +58,18 @@ The message queue pre-allocates as many messages as the system will need. These 
 The fifos are implemented as a fixed size circular array of pointers to buffers. Buffers are appended to the tail. Buffers are removed from the head. The head and the tail are protected by separate mutexes to minimize contention. This eliminates contention between producers and consumers. Producers still contend with other producers. And consumers still contend with other consumers.
 
 The technique can be used to implement a more complex data pipeline involving many threads by adding more fifos.
+
+### Most Recent Out
+
+This used to be called a triple buffer. But that term has been confused with a FIFO with 3 buffers. Cause Microsoft. Sigh. So I use this term.
+
+A single producer thread passes data to a single consumer thread, like a FIFO.
+Unlike a FIFO, data is not guaranteed to be delivered.
+Unlike a FIFO, putting data into the MRO cannot fail and can never block the producing thread.
+Like a FIFO, getting data from the MRO may block the consumer.
+
+The use case is when you cannot control the rate at which data is produced nor the rate at which it is consumed and you may discard data if the consumer is slower than the producer. The canonical case is decoding video. Frames must be decoded (produced) at one rate. Frames are consumed at a potentially completely different rate. The producer cannot be blocked by a slow consumer. Frames must be decoded but undisplayed frames can be discarded.
+
+The producer gets an empty buffer. The buffer is marked filling. There is always an empty buffer available. This function never blocks the producer. The producer fills the buffer. The producer puts the full buffer into the MRO. Full buffers are marked empty. The filling buffer is marked full. The consumer is signaled there is a full buffer available. This function never blocks the producer.
+
+The consumer gets a full buffer. Waiting is optional. The full buffer is marked emptying. The consumer consumes the data in the buffer. The consumer puts the now empty buffer back into the MRO. Emptying buffers are marked empty. This function never blocks the consumer.
