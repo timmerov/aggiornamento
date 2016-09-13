@@ -21,9 +21,6 @@ implement the bob thread.
 
 // use an anonymous namespace to avoid name collisions at link time.
 namespace {
-    const auto kDirtyShirt = "dirty shirt";
-    const auto kFood = "food";
-
     class Bob : public agm::Thread {
     public:
         Bob() throw() : Thread("Bob") {
@@ -32,25 +29,28 @@ namespace {
         virtual ~Bob() = default;
 
         Mro *mro_ = nullptr;
-        int mro_size_ = 0;
-        char *mro_buffer_ = nullptr;
+        bool first_pass_ = true;
 
         virtual void begin() throw() {
-            LOG("Bob arrives at the airlock.");
-
-            mro_size_ = mro_->getSize();
-            mro_buffer_ = new(std::nothrow) char[mro_size_];
+            LOG_VERBOSE("Bob");
         }
 
-        virtual void run() throw() {
-            agm::sleep::milliseconds(500);
-            mro_->getString(mro_buffer_, mro_size_);
-            LOG("Bob finds " << mro_buffer_ << " in the mro");
-            agm::sleep::milliseconds(500);
-            LOG("Bob puts " << kDirtyShirt << " into the mro");
-            mro_->putString(kDirtyShirt);
+        virtual void runOnce() throw() {
+            if (first_pass_) {
+                first_pass_ = false;
+                LOG("Bob is waiting.");
+            }
 
-            master::waitDone();
+            auto ptr = mro_->getFullWait();
+
+            // check stop condition.
+            if (isProducing() == false) {
+                return;
+            }
+
+            LOG("Bob finds " << ptr << " in the mro");
+            mro_->putEmpty();
+            agm::sleep::milliseconds(1000);
         }
 
         virtual void drainOnce() throw() {
@@ -60,14 +60,14 @@ namespace {
 
         virtual void unblock() throw() {
             LOG_VERBOSE("Bob");
+
+            if (isDraining()) {
+                mro_->putFull();
+            }
         }
 
         virtual void end() throw() {
-            LOG("Bob went home.");
-
-            mro_size_ = 0;
-            delete[] mro_buffer_;
-            mro_buffer_ = nullptr;
+            LOG_VERBOSE("Bob");
         }
     };
 }

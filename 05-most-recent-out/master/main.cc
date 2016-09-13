@@ -41,8 +41,10 @@ int main(
     threads.push_back(createAlice(mro));
     threads.push_back(createBob(mro));
 
-    // run the threads.
-    agm::Thread::runAll(threads);
+    // run the threads for 10 seconds.
+    agm::Thread::startAll(threads);
+    agm::sleep::seconds(10);
+    agm::Thread::stopAll(threads);
 
     return 0;
 }

@@ -10,6 +10,7 @@ implement the alice thread.
 #include <aggiornamento/aggiornamento.h>
 #include <aggiornamento/log.h>
 #include <aggiornamento/master.h>
+#include <aggiornamento/string.h>
 #include <aggiornamento/thread.h>
 #include <container/mro.h>
 
@@ -21,9 +22,6 @@ implement the alice thread.
 
 // use an anonymous namespace to avoid name collisions at link time.
 namespace {
-    const auto kCleanSocks = "clean socks";
-    const auto kGarbage = "garbage";
-
     class Alice : public agm::Thread {
     public:
         Alice() throw() : Thread("Alice") {
@@ -32,24 +30,26 @@ namespace {
         virtual ~Alice() = default;
 
         Mro *mro_ = nullptr;
-        int mro_size_ = 0;
-        char *mro_buffer_ = nullptr;
+        int size_ = 0;
+        int counter_ = 0;
 
         virtual void begin() throw() {
-            LOG("Alice is in the spaceship at the airlock.");
-
-            mro_size_ = mro_->getSize();
-            mro_buffer_ = new(std::nothrow) char[mro_size_];
+            size_ = mro_->getSize();
         }
 
-        virtual void run() throw() {
-            LOG("Alice puts " << kCleanSocks << " into the mro");
-            mro_->putString(kCleanSocks);
-            agm::sleep::milliseconds(1500);
-            mro_->getString(mro_buffer_, mro_size_);
-            LOG("Alice finds " << mro_buffer_ << " in the mro");
+        virtual void runOnce() throw() {
+            if (counter_ == 0) {
+                LOG("Alice is snoozing.");
+                agm::sleep::milliseconds(1000);
+            }
 
-            master::setDone();
+            auto ptr = mro_->getEmpty();
+            LOG("Alice puts " << counter_ << " into the mro.");
+            std::string s = std::move(std::to_string(counter_));
+            ++counter_;
+            agm::string::copy(ptr, size_, s.c_str());
+            mro_->putFull();
+            agm::sleep::milliseconds(1000*24/60);
         }
 
         virtual void drainOnce() throw() {
@@ -62,11 +62,7 @@ namespace {
         }
 
         virtual void end() throw() {
-            LOG("Alice went home.");
-
-            mro_size_ = 0;
-            delete[] mro_buffer_;
-            mro_buffer_ = nullptr;
+            LOG_VERBOSE("Alice");
         }
     };
 }
