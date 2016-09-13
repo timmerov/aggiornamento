@@ -73,3 +73,11 @@ The use case is when you cannot control the rate at which data is produced nor t
 The producer gets an empty buffer. The buffer is marked filling. There is always an empty buffer available. This function never blocks the producer. The producer fills the buffer. The producer puts the full buffer into the MRO. Full buffers are marked empty. The filling buffer is marked full. The consumer is signaled there is a full buffer available. This function never blocks the producer.
 
 The consumer gets a full buffer. Waiting is optional. The full buffer is marked emptying. The consumer consumes the data in the buffer. The consumer puts the now empty buffer back into the MRO. Emptying buffers are marked empty. This function never blocks the consumer.
+
+### Write Once Read many
+
+tbd
+
+### Lock Free queue
+
+Don't waste your time.
