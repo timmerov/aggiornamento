@@ -74,7 +74,7 @@ The producer gets an empty buffer. The buffer is marked filling. There is always
 
 The consumer gets a full buffer. Waiting is optional. The full buffer is marked emptying. The consumer consumes the data in the buffer. The consumer puts the now empty buffer back into the MRO. Emptying buffers are marked empty. This function never blocks the consumer.
 
-### Write Once Read many
+### Write Once Read Many
 
 tbd
 
