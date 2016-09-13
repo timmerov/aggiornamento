@@ -82,8 +82,8 @@ namespace {
         }
 
         int size_ = 0;
-        int volatile head_ = 0;
-        int volatile tail_ = 0;
+        int head_ = 0;
+        int tail_ = 0;
         char * volatile *data_ = nullptr;
         std::mutex head_mutex_;
         std::mutex tail_mutex_;
