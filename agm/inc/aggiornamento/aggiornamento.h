@@ -71,6 +71,11 @@ namespace agm {
     typedef std::int64_t  int64;
     typedef std::uint64_t uint64;
 #endif
+
+    namespace sleep {
+        void milliseconds(int ms) throw();
+        void seconds(int secs) throw();
+    }
 }
 
 // this isn't in microsoft's version of c++11. weird.

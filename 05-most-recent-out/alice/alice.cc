@@ -3,16 +3,15 @@ Copyright (C) 2012-2016 tim cotter. All rights reserved.
 */
 
 /**
-message queue example.
+most recent out example.
 implement the alice thread.
 **/
 
 #include <aggiornamento/aggiornamento.h>
 #include <aggiornamento/log.h>
 #include <aggiornamento/master.h>
-#include <aggiornamento/string.h>
 #include <aggiornamento/thread.h>
-#include <container/message-queue.h>
+#include <container/mro.h>
 
 // pick one
 #undef LOG_VERBOSE
@@ -22,7 +21,8 @@ implement the alice thread.
 
 // use an anonymous namespace to avoid name collisions at link time.
 namespace {
-    const char kMeetingRequest[] = "meeting request";
+    const auto kCleanSocks = "clean socks";
+    const auto kGarbage = "garbage";
 
     class Alice : public agm::Thread {
     public:
@@ -31,23 +31,23 @@ namespace {
 
         virtual ~Alice() = default;
 
-        MessageQueue *message_queue_ = nullptr;
-        int size_ = 0;
+        Mro *mro_ = nullptr;
+        int mro_size_ = 0;
+        char *mro_buffer_ = nullptr;
 
         virtual void begin() throw() {
-            LOG_VERBOSE("Alice");
+            LOG("Alice is in the spaceship at the airlock.");
 
-            size_ = message_queue_->getMessageSize();
+            mro_size_ = mro_->getSize();
+            mro_buffer_ = new(std::nothrow) char[mro_size_];
         }
 
         virtual void run() throw() {
-            LOG("Alice gets an empty meessage from the queue.");
-            auto ptr = message_queue_->getEmpty();
-            agm::sleep::milliseconds(1000);
-
-            LOG("Alice puts " << kMeetingRequest << " into the message queue.");
-            agm::string::copy(ptr, size_, kMeetingRequest);
-            message_queue_->putMessage(ptr);
+            LOG("Alice puts " << kCleanSocks << " into the mro");
+            mro_->putString(kCleanSocks);
+            agm::sleep::milliseconds(1500);
+            mro_->getString(mro_buffer_, mro_size_);
+            LOG("Alice finds " << mro_buffer_ << " in the mro");
 
             master::setDone();
         }
@@ -62,15 +62,19 @@ namespace {
         }
 
         virtual void end() throw() {
-            LOG_VERBOSE("Alice");
+            LOG("Alice went home.");
+
+            mro_size_ = 0;
+            delete[] mro_buffer_;
+            mro_buffer_ = nullptr;
         }
     };
 }
 
 agm::Thread *createAlice(
-    MessageQueue *message_queue
+    Mro *mro
 ) throw() {
     auto th = new(std::nothrow) Alice;
-    th->message_queue_ = message_queue;
+    th->mro_ = mro;
     return th;
 }

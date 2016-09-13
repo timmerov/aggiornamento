@@ -50,19 +50,19 @@ namespace {
         }
 
         virtual void run() throw() {
-            std::this_thread::sleep_for(std::chrono::milliseconds(500));
+            agm::sleep::milliseconds(500);
             trunk_->getString(trunk_buffer_, trunk_size_);
             LOG("Bob finds " << trunk_buffer_ << " in the trunk");
-            std::this_thread::sleep_for(std::chrono::milliseconds(500));
+            agm::sleep::milliseconds(500);
             LOG("Bob puts " << kDirtyShirt << " into the trunk");
             trunk_->putString(kDirtyShirt);
 
-            std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+            agm::sleep::milliseconds(1000);
             LOG("Bob attempts to open the airlock.");
             auto ptr = airlock_->acquire(0);
             LOG("Bob opens the airlock.");
             agm::string::copy(ptr, airlock_size_, kFood);
-            std::this_thread::sleep_for(std::chrono::milliseconds(500));
+            agm::sleep::milliseconds(500);
             LOG("Bob puts " << kFood << " into the airlock.");
             LOG("Bob closes the airlock.");
             airlock_->release(0);
@@ -86,7 +86,7 @@ namespace {
 
         virtual void drainOnce() throw() {
             LOG_VERBOSE("Bob");
-            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+            agm::sleep::milliseconds(100);
         }
 
         virtual void unblock() throw() {

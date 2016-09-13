@@ -52,23 +52,23 @@ namespace {
         virtual void run() throw() {
             LOG("Alice puts " << kCleanSocks << " into the trunk");
             trunk_->putString(kCleanSocks);
-            std::this_thread::sleep_for(std::chrono::milliseconds(1500));
+            agm::sleep::milliseconds(1500);
             trunk_->getString(trunk_buffer_, trunk_size_);
             LOG("Alice finds " << trunk_buffer_ << " in the trunk");
 
-            std::this_thread::sleep_for(std::chrono::milliseconds(500));
+            agm::sleep::milliseconds(500);
             LOG("Alice attempts to open the airlock.");
             auto ptr = airlock_->acquire(1);
             LOG("Alice opens the airlock.");
             LOG("Alice removed " << ptr << " from the airlock.");
             agm::string::copy(ptr, airlock_size_, kGarbage);
-            std::this_thread::sleep_for(std::chrono::milliseconds(500));
+            agm::sleep::milliseconds(500);
             LOG("Alice puts " << kGarbage << " in the airlock.");
             LOG("Alice closes the airlock.");
             airlock_->release(1);
 
             LOG("Alice is no longer using the airlock.");
-            std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+            agm::sleep::milliseconds(1000);
 
             LOG("Alice ends the interaction.");
             master::setDone();
@@ -76,7 +76,7 @@ namespace {
 
         virtual void drainOnce() throw() {
             LOG_VERBOSE("Alice");
-            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+            agm::sleep::milliseconds(100);
         }
 
         virtual void unblock() throw() {

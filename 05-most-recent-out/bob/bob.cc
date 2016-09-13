@@ -3,16 +3,15 @@ Copyright (C) 2012-2016 tim cotter. All rights reserved.
 */
 
 /**
-double buffer example.
+most recent out example.
 implement the bob thread.
 **/
 
 #include <aggiornamento/aggiornamento.h>
 #include <aggiornamento/log.h>
 #include <aggiornamento/master.h>
-#include <aggiornamento/string.h>
 #include <aggiornamento/thread.h>
-#include <container/double-buffer.h>
+#include <container/mro.h>
 
 // pick one
 #undef LOG_VERBOSE
@@ -22,7 +21,8 @@ implement the bob thread.
 
 // use an anonymous namespace to avoid name collisions at link time.
 namespace {
-    const auto kSnipsSnails = "snips and snails";
+    const auto kDirtyShirt = "dirty shirt";
+    const auto kFood = "food";
 
     class Bob : public agm::Thread {
     public:
@@ -31,31 +31,26 @@ namespace {
 
         virtual ~Bob() = default;
 
-        DoubleBuffer *db_= nullptr;
-        int size_ = 0;
+        Mro *mro_ = nullptr;
+        int mro_size_ = 0;
+        char *mro_buffer_ = nullptr;
 
         virtual void begin() throw() {
-            LOG_VERBOSE("Bob");
+            LOG("Bob arrives at the airlock.");
 
-            size_ = db_->getSize();
+            mro_size_ = mro_->getSize();
+            mro_buffer_ = new(std::nothrow) char[mro_size_];
         }
 
         virtual void run() throw() {
-            LOG("Bob acquires a buffer.");
-            auto ptr = db_->acquire(1);
-            agm::sleep::milliseconds(1000);
-            agm::string::copy(ptr, size_, kSnipsSnails);
-            LOG("Bob puts " << kSnipsSnails << " into the buffer.");
-            LOG("Bob wants to swap buffers.");
-            ptr = db_->swap(ptr);
-            LOG("Bob swapped buffers.");
-            LOG("Bob finds " << ptr << " in the buffer.");
+            agm::sleep::milliseconds(500);
+            mro_->getString(mro_buffer_, mro_size_);
+            LOG("Bob finds " << mro_buffer_ << " in the mro");
+            agm::sleep::milliseconds(500);
+            LOG("Bob puts " << kDirtyShirt << " into the mro");
+            mro_->putString(kDirtyShirt);
 
-            LOG("Bob is idle.");
-            agm::sleep::milliseconds(1000);
-            LOG("Bob ends the interaction");
-
-            master::setDone();
+            master::waitDone();
         }
 
         virtual void drainOnce() throw() {
@@ -68,15 +63,19 @@ namespace {
         }
 
         virtual void end() throw() {
-            LOG_VERBOSE("Bob");
+            LOG("Bob went home.");
+
+            mro_size_ = 0;
+            delete[] mro_buffer_;
+            mro_buffer_ = nullptr;
         }
     };
 }
 
 agm::Thread *createBob(
-    DoubleBuffer *db
+    Mro *mro
 ) throw() {
     auto th = new(std::nothrow) Bob;
-    th->db_ = db;
+    th->mro_ = mro;
     return th;
 }

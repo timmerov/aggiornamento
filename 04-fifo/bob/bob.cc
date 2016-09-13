@@ -64,7 +64,7 @@ namespace {
 
         virtual void drainOnce() throw() {
             LOG_VERBOSE("Bob");
-            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+            agm::sleep::milliseconds(100);
         }
 
         virtual void unblock() throw() {
