@@ -5,7 +5,9 @@ Copyright (C) 2012-2016 tim cotter. All rights reserved.
 /**
 most recent out example.
 
-tk
+the alice thread writes the count as a string to the mro buffer 2.5 times per second.
+the bob thread pulls the count string from the mro buffer 1.0 times per second.
+neither the alice thread nor the bob thread ever block waiting for the other.
 **/
 
 #include <aggiornamento/aggiornamento.h>
