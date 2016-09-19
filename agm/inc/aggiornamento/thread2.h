@@ -66,7 +66,7 @@ namespace agm {
         called by master thread.
         starts the thread and waits for its begin function to return.
         the thread's begin function is called.
-        the thread is blocked until startProducing is called.
+        the thread is blocked until start is called.
         */
         void init() throw();
 
@@ -81,13 +81,16 @@ namespace agm {
         called by master thread.
         may be called by the thread.
         tells the thread to stop.
-        does not wait for the thread to exit (join, terminate).
+        does not block the calling thread.
+        the thread's run routine should return.
+        the thread is blocked until waitExit is called.
         */
         void stop() throw();
 
         /*
         called by the master thread.
         waits for the thread to exit (join, teminate).
+        the thread's end function is called.
         */
         void waitExit() throw();
 
@@ -171,8 +174,9 @@ namespace agm {
     private:
         std::string name_;
         std::thread *thread_;
-        Semaphore begin_sem_;
+        Semaphore begun_sem_;
         Semaphore start_sem_;
+        Semaphore finish_sem_;
         bool is_running_;
 
         friend void runThread2(Thread2 *thread) throw();

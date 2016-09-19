@@ -25,12 +25,14 @@ namespace agm {
         LOG_VERBOSE(thread->getName() << " begin...");
         thread->begin();
         LOG_VERBOSE(thread->getName() << " begin done, wait start...");
-        thread->begin_sem_.signal();
+        thread->begun_sem_.signal();
         thread->start_sem_.waitConsume();
         LOG_VERBOSE(thread->getName() << " got start, run...");
         thread->run();
-        LOG_VERBOSE(thread->getName() << " run done, end...");
+        LOG_VERBOSE(thread->getName() << " run done, wait finish...");
         thread->is_running_ = false;
+        thread->finish_sem_.waitConsume();
+        LOG_VERBOSE(thread->getName() << " got finish. end...");
         thread->end();
         LOG_VERBOSE(thread->getName() << " end done");
     }
@@ -41,8 +43,9 @@ agm::Thread2::Thread2(
 ) throw() :
     name_(name),
     thread_(nullptr),
-    begin_sem_(),
+    begun_sem_(),
     start_sem_(),
+    finish_sem_(),
     is_running_(true) {
 }
 
@@ -59,7 +62,7 @@ std::string agm::Thread2::getName() const throw() {
 
 void agm::Thread2::init() throw() {
     thread_ = new std::thread(runThread2, this);
-    begin_sem_.waitConsume();
+    begun_sem_.waitConsume();
 }
 
 void agm::Thread2::start() throw() {
@@ -71,7 +74,7 @@ void agm::Thread2::stop() throw() {
 }
 
 void agm::Thread2::waitExit() throw() {
-    is_running_ = false;
+    finish_sem_.signal();
     if (thread_->joinable()) {
         thread_->join();
     }
