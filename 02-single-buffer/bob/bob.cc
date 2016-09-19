@@ -11,14 +11,14 @@ implement the bob thread.
 #include <aggiornamento/log.h>
 #include <aggiornamento/master.h>
 #include <aggiornamento/string.h>
-#include <aggiornamento/thread.h>
+#include <aggiornamento/thread2.h>
 #include <container/airlock.h>
 #include <container/trunk.h>
 
 // pick one
 #undef LOG_VERBOSE
-//#define LOG_VERBOSE LOG
-#define LOG_VERBOSE(...)
+#define LOG_VERBOSE LOG
+//#define LOG_VERBOSE(...)
 
 
 // use an anonymous namespace to avoid name collisions at link time.
@@ -26,9 +26,9 @@ namespace {
     const auto kDirtyShirt = "dirty shirt";
     const auto kFood = "food";
 
-    class Bob : public agm::Thread {
+    class Bob : public agm::Thread2 {
     public:
-        Bob() throw() : Thread("Bob") {
+        Bob() throw() : Thread2("Bob") {
         }
 
         virtual ~Bob() = default;
@@ -75,27 +75,13 @@ namespace {
 
             LOG("Bob attempts to open the airlock.");
             ptr = airlock_->acquire(0);
-            if (isProducing()) {
+            if (isRunning()) {
                 LOG("Oops! Bob should not have been able to open the airlock.");
             } else {
                 LOG("Bob gave up trying to open the airlock.");
             }
 
-            master::waitDone();
-        }
-
-        virtual void drainOnce() throw() {
-            LOG_VERBOSE("Bob");
-            agm::sleep::milliseconds(100);
-        }
-
-        virtual void unblock() throw() {
-            LOG_VERBOSE("Bob");
-
-            if (isDraining()) {
-                LOG("Master tells bob to give up.");
-                airlock_->release(1);
-            }
+            agm::master::waitDone();
         }
 
         virtual void end() throw() {
@@ -108,7 +94,7 @@ namespace {
     };
 }
 
-agm::Thread *createBob(
+agm::Thread2 *createBob(
     Airlock *airlock,
     Trunk *trunk
 ) throw() {

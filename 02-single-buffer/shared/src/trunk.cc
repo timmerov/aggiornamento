@@ -35,10 +35,11 @@ namespace {
     };
 }
 
-Trunk::Trunk() {
+Trunk::Trunk() throw() :
+    Container("Trunk") {
 }
 
-Trunk::~Trunk() {
+Trunk::~Trunk() throw() {
 }
 
 Trunk *Trunk::create(

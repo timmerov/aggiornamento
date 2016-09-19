@@ -13,13 +13,14 @@ in the second part, the put things into and take things out of an airlock.
 
 #include <aggiornamento/aggiornamento.h>
 #include <aggiornamento/log.h>
-#include <aggiornamento/thread.h>
+#include <aggiornamento/master.h>
+#include <aggiornamento/thread2.h>
 #include <container/airlock.h>
 #include <container/trunk.h>
 
 
-extern agm::Thread *createAlice(Airlock *airlock, Trunk *trunk);
-extern agm::Thread *createBob(Airlock *airlock, Trunk *trunk);
+extern agm::Thread2 *createAlice(Airlock *airlock, Trunk *trunk);
+extern agm::Thread2 *createBob(Airlock *airlock, Trunk *trunk);
 
 // use anonymous namespace to avoid collisions at link time.
 namespace {
@@ -38,17 +39,20 @@ int main(
     auto airlock = Airlock::create(kBufferSize);
     auto trunk = Trunk::create(kBufferSize);
 
-    // use unique_ptr so they're deleted at end of scope.
-    std::unique_ptr<Airlock> auto_0(airlock);
-    std::unique_ptr<Trunk> auto_1(trunk);
+    // store them in a vector.
+    std::vector<agm::Container *> containers;
+    containers.push_back(airlock);
+    containers.push_back(trunk);
 
     // create the threads.
-    std::vector<agm::Thread *> threads;
+    std::vector<agm::Thread2 *> threads;
     threads.push_back(createAlice(airlock, trunk));
     threads.push_back(createBob(airlock, trunk));
 
     // run the threads.
-    agm::Thread::runAll(threads);
+    agm::Thread2::startAll(threads, containers);
+    agm::master::waitDone();
+    agm::Thread2::stopAll(threads, containers);
 
     return 0;
 }

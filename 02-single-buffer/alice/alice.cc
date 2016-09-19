@@ -11,14 +11,14 @@ implement the alice thread.
 #include <aggiornamento/log.h>
 #include <aggiornamento/master.h>
 #include <aggiornamento/string.h>
-#include <aggiornamento/thread.h>
+#include <aggiornamento/thread2.h>
 #include <container/airlock.h>
 #include <container/trunk.h>
 
 // pick one
 #undef LOG_VERBOSE
-//#define LOG_VERBOSE LOG
-#define LOG_VERBOSE(...)
+#define LOG_VERBOSE LOG
+//#define LOG_VERBOSE(...)
 
 
 // use an anonymous namespace to avoid name collisions at link time.
@@ -26,9 +26,9 @@ namespace {
     const auto kCleanSocks = "clean socks";
     const auto kGarbage = "garbage";
 
-    class Alice : public agm::Thread {
+    class Alice : public agm::Thread2 {
     public:
-        Alice() throw() : Thread("Alice") {
+        Alice() throw() : Thread2("Alice") {
         }
 
         virtual ~Alice() = default;
@@ -71,16 +71,7 @@ namespace {
             agm::sleep::milliseconds(1000);
 
             LOG("Alice ends the interaction.");
-            master::setDone();
-        }
-
-        virtual void drainOnce() throw() {
-            LOG_VERBOSE("Alice");
-            agm::sleep::milliseconds(100);
-        }
-
-        virtual void unblock() throw() {
-            LOG_VERBOSE("Alice");
+            agm::master::setDone();
         }
 
         virtual void end() throw() {
@@ -93,7 +84,7 @@ namespace {
     };
 }
 
-agm::Thread *createAlice(
+agm::Thread2 *createAlice(
     Airlock *airlock,
     Trunk *trunk
 ) throw() {

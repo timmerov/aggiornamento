@@ -17,13 +17,16 @@ there is no signalling.
 
 #pragma once
 
+#include <aggiornamento/aggiornamento.h>
+#include <aggiornamento/container.h>
 
-class Trunk {
+
+class Trunk : public agm::Container {
 protected:
-    Trunk();
+    Trunk() throw();
 public:
     Trunk(const Trunk &) = delete;
-    virtual ~Trunk();
+    virtual ~Trunk() throw();
 
     /*
     master thread creates the trunk.
@@ -56,4 +59,12 @@ public:
     ) throw() {
         getString(buffer, size);
     }
+
+    /*
+    Container interface.
+    unblock threads.
+    we cannot block threads.
+    **
+    virtual void unblock() throw();
+    */
 };

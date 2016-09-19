@@ -35,13 +35,16 @@ that acquires on construction and releases on destruction.
 
 #pragma once
 
+#include <aggiornamento/aggiornamento.h>
+#include <aggiornamento/container.h>
 
-class Airlock {
+
+class Airlock : public agm::Container {
 protected:
-    Airlock();
+    Airlock() throw();
 public:
     Airlock(const Airlock &) = delete;
-    virtual ~Airlock();
+    virtual ~Airlock() throw();
 
     /*
     master thread creates the airlock.
@@ -65,4 +68,10 @@ public:
     release the buffer so it can be used by other threads
     */
     void release(int side) throw();
+
+    /*
+    Container interface.
+    unblock threads.
+    */
+    virtual void unblock() throw();
 };

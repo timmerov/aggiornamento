@@ -61,8 +61,8 @@ stopCompletely
 
 // pick one
 #undef LOG_VERBOSE
-//#define LOG_VERBOSE LOG
-#define LOG_VERBOSE(...)
+#define LOG_VERBOSE LOG
+//#define LOG_VERBOSE(...)
 
 
 // use an anonymous namespace to avoid name collisions at link time

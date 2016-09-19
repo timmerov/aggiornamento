@@ -38,10 +38,11 @@ namespace {
     };
 }
 
-Airlock::Airlock() {
+Airlock::Airlock() throw() :
+    agm::Container("Airlock") {
 }
 
-Airlock::~Airlock() {
+Airlock::~Airlock() throw() {
 }
 
 Airlock *Airlock::create(
@@ -96,4 +97,12 @@ void Airlock::release(
     // signal the OTHER side.
     auto impl = (AirlockImpl *) this;
     impl->sem_[1-side].signal();
+}
+
+/*
+unblock threads.
+*/
+void Airlock::unblock() throw() {
+    release(0);
+    release(1);
 }

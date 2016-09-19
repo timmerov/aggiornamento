@@ -55,7 +55,7 @@ namespace {
             agm::sleep::milliseconds(1000);
             LOG("Bob ends the interaction");
 
-            master::setDone();
+            agm::master::setDone();
         }
 
         virtual void drainOnce() throw() {

@@ -9,8 +9,10 @@ tell the master thread to stop all threads.
 
 #pragma once
 
-namespace master {
-    bool isDone() throw();
-    void setDone() throw();
-    void waitDone() throw();
+namespace agm {
+    namespace master {
+        bool isDone() throw();
+        void setDone() throw();
+        void waitDone() throw();
+    }
 }

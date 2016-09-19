@@ -49,7 +49,7 @@ namespace {
             agm::string::copy(ptr, size_, kMeetingRequest);
             message_queue_->putMessage(ptr);
 
-            master::setDone();
+            agm::master::setDone();
         }
 
         virtual void drainOnce() throw() {

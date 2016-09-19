@@ -32,12 +32,12 @@ namespace {
     };
 }
 
-bool master::isDone() throw() {
+bool agm::master::isDone() throw() {
     auto master = Master::getSingleton();
     return master->done_;
 }
 
-void master::setDone() throw() {
+void agm::master::setDone() throw() {
     auto master = Master::getSingleton();
     {
         std::unique_lock<std::mutex> lock(master->mutex_);
@@ -46,7 +46,7 @@ void master::setDone() throw() {
     master->done_cv_.notify_all();
 }
 
-void master::waitDone() throw() {
+void agm::master::waitDone() throw() {
     auto master = Master::getSingleton();
     std::unique_lock<std::mutex> lock(master->mutex_);
     while (master->done_ == false) {

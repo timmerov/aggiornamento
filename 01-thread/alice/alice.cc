@@ -16,19 +16,19 @@ interface funcions.
 #include <aggiornamento/aggiornamento.h>
 #include <aggiornamento/log.h>
 #include <aggiornamento/master.h>
-#include <aggiornamento/thread.h>
+#include <aggiornamento/thread2.h>
 
 // pick one
 #undef LOG_VERBOSE
-//#define LOG_VERBOSE LOG
-#define LOG_VERBOSE(...)
+#define LOG_VERBOSE LOG
+//#define LOG_VERBOSE(...)
 
 
 // use an anonymous namespace to avoid name collisions at link time.
 namespace {
-    class Alice : public agm::Thread {
+    class Alice : public agm::Thread2 {
     public:
-        Alice() throw() : Thread("Alice") {
+        Alice() throw() : Thread2("Alice") {
         }
 
         virtual ~Alice() throw() {
@@ -43,22 +43,8 @@ namespace {
 
         virtual void runOnce() throw() {
             ++counter_;
-            LOG("Alice " << counter_);
-            if (counter_ >= 3) {
-                master::setDone();
-                stopProducingSelf();
-            } else {
-                agm::sleep::milliseconds(900);
-            }
-        }
-
-        virtual void drainOnce() throw() {
-            LOG_VERBOSE("Alice");
-            agm::sleep::milliseconds(100);
-        }
-
-        virtual void unblock() throw() {
-            LOG_VERBOSE("Alice");
+            LOG("Alice produces " << counter_);
+            agm::sleep::milliseconds(900);
         }
 
         virtual void end() throw() {
@@ -67,6 +53,6 @@ namespace {
     };
 }
 
-agm::Thread *createAlice() throw() {
+agm::Thread2 *createAlice() throw() {
     return new(std::nothrow) Alice;
 }

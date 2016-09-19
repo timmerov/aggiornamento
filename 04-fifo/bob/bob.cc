@@ -59,7 +59,7 @@ namespace {
             LOG("Bob returned the now empty message.");
             message_queue_->putEmpty(ptr);
 
-            master::waitDone();
+            agm::master::waitDone();
         }
 
         virtual void drainOnce() throw() {

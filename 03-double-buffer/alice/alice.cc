@@ -58,7 +58,7 @@ namespace {
                 LOG("Alice gave up trying to swap buffers.");
             }
 
-            master::waitDone();
+            agm::master::waitDone();
         }
 
         virtual void drainOnce() throw() {
