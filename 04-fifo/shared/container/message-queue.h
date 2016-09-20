@@ -2,7 +2,7 @@
 Copyright (C) 2012-2016 tim cotter. All rights reserved.
 */
 
-/*
+/**
 fifo example.
 message queue interface
 
@@ -16,7 +16,7 @@ fill it
 putMessage
                 read message
                 putEmpty
-*/
+**/
 
 #pragma once
 

@@ -2,7 +2,7 @@
 Copyright (C) 2012-2016 tim cotter. All rights reserved.
 */
 
-/*
+/**
 fifo example.
 message queue implementation
 
@@ -23,7 +23,7 @@ the other for full messages.
 allocate a chunk of memory.
 divide it up into messages.
 put all of the messages in the empty fifo.
-*/
+**/
 
 #include <aggiornamento/aggiornamento.h>
 #include <container/fifo.h>

@@ -2,7 +2,7 @@
 Copyright (C) 2012-2016 tim cotter. All rights reserved.
 */
 
-/*
+/**
 double buffer example.
 implementation
 
@@ -28,7 +28,7 @@ swap
 etc.
 
 the implementation uses two semaphores.
-*/
+**/
 
 #include <aggiornamento/aggiornamento.h>
 #include <aggiornamento/thread.h>

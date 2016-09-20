@@ -2,7 +2,7 @@
 Copyright (C) 2012-2016 tim cotter. All rights reserved.
 */
 
-/*
+/**
 most recent out example.
 mro implementation.
 
@@ -48,7 +48,7 @@ you can't block the decoder or it will fall behind.
 you must decode every frame.
 therefore you must discard some of the decoded frames.
 the easy way is to put all frames into an mro.
-*/
+**/
 
 #include <aggiornamento/aggiornamento.h>
 #include <aggiornamento/string.h>

@@ -118,13 +118,16 @@ namespace agm {
         formatted print
         calls agm::string::vprintf on all platforms.
         the return value is the number of characters that would have been
-        written to sufficiently large buffer.
+        written to a sufficiently large buffer.
         note this is different from what microsoft's vsprintf_s returns.
         */
         int printf(char *buffer, int size, const char *format, ...) throw();
 
         /*
         formatted print a list of arguments
+        the return value is the number of characters that would have been
+        written to a sufficiently large buffer.
+        note this is different from what microsoft's vsprintf_s returns.
         */
         template <int size>
         int printf(

@@ -6,8 +6,7 @@ Copyright (C) 2012-2016 tim cotter. All rights reserved.
 simple thread example.
 implement the alice thread.
 
-count to 3 every 0.9 seconds.
-then quit.
+increment and log the counter every 0.9 seconds.
 
 technically we don't need to override all of the
 interface funcions.

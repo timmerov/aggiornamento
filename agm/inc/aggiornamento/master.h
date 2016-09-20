@@ -2,10 +2,10 @@
 Copyright (C) 2012-2016 tim cotter. All rights reserved.
 */
 
-/*
+/**
 interface to the master thread.
 tell the master thread to stop all threads.
-*/
+**/
 
 #pragma once
 

@@ -2,7 +2,7 @@
 Copyright (C) 2012-2016 tim cotter. All rights reserved.
 */
 
-/*
+/**
 fifo example.
 implementation
 
@@ -61,7 +61,7 @@ in the desired order.
 
 assumes the library lock and unlock functions contain
 fences that flush the memory write operations.
-*/
+**/
 
 #include <aggiornamento/aggiornamento.h>
 #include <aggiornamento/thread.h>

@@ -2,7 +2,7 @@
 Copyright (C) 2012-2016 tim cotter. All rights reserved.
 */
 
-/*
+/**
 double buffer example.
 interface
 
@@ -26,7 +26,7 @@ delay           delay
                 swap
 swap
 etc.
-*/
+**/
 
 #pragma once
 

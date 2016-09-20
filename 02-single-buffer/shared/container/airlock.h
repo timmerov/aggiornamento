@@ -2,7 +2,7 @@
 Copyright (C) 2012-2016 tim cotter. All rights reserved.
 */
 
-/*
+/**
 single buffer example.
 airlock interface.
 
@@ -31,7 +31,7 @@ acquire 0
 note: release must always be called when the buffer is acquired.
 for production, you might want to make a fancy c++ class wrapper
 that acquires on construction and releases on destruction.
-*/
+**/
 
 #pragma once
 

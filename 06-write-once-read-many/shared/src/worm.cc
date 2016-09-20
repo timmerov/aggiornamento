@@ -2,12 +2,12 @@
 Copyright (C) 2012-2016 tim cotter. All rights reserved.
 */
 
-/*
+/**
 write once read many example.
 worm implementation.
 
 tbd
-*/
+**/
 
 #include <aggiornamento/aggiornamento.h>
 #include <aggiornamento/string.h>

@@ -2,17 +2,38 @@
 Copyright (C) 2012-2016 tim cotter. All rights reserved.
 */
 
-/*
+/**
 single buffer example.
 airlock container implementation.
 
-anyone can open the airlock...
-put stuff in or take stuff out...
-then close the airlock.
-which makes it available for the next person.
+assumes single producer, single consumer.
+
+the contents of the buffer is protected by two semaphores.
+two threads (0 and 1) alternate ownership of the buffer.
+both threads attempt to acquire the buffer at start.
+thread 0 will succeed.
+thread 1 will be blocked.
+thread 0 fills the buffer and releases it.
+this unblocks thread 1.
+repeat.
+
+thread 0        thread 1
+--------        --------
+acquire 0       acquire 1
+copy to buffer
+delay
+release 0
+                copy to buffer
+                delay
+                release 1
+acquire 0
+
+note: release must always be called when the buffer is acquired.
+for production, you might want to make a fancy c++ class wrapper
+that acquires on construction and releases on destruction.
 
 the implementation uses two semaphores.
-*/
+**/
 
 #include <aggiornamento/aggiornamento.h>
 #include <aggiornamento/semaphore.h>

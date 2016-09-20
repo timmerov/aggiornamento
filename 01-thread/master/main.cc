@@ -5,7 +5,8 @@ Copyright (C) 2012-2016 tim cotter. All rights reserved.
 /**
 simple thread example.
 
-alice is a thread that counts for 10 seconds.
+alice is a thread that counts seconds.
+run it for 3 seconds.
 **/
 
 #include <aggiornamento/aggiornamento.h>

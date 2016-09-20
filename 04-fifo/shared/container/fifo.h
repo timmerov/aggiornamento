@@ -2,7 +2,7 @@
 Copyright (C) 2012-2016 tim cotter. All rights reserved.
 */
 
-/*
+/**
 fifo example.
 interface
 
@@ -18,7 +18,7 @@ producers contend with other producers.
 consumers contend with other consumers.
 producers do not contend with consumers.
 and vice versa.
-*/
+**/
 
 #pragma once
 

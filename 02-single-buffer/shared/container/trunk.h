@@ -2,7 +2,7 @@
 Copyright (C) 2012-2016 tim cotter. All rights reserved.
 */
 
-/*
+/**
 single buffer example.
 trunk interface.
 
@@ -13,7 +13,7 @@ multiple producers, multiple consumers.
 the string is protected by a lock.
 there is no other synchronization.
 there is no signalling.
-*/
+**/
 
 #pragma once
 
