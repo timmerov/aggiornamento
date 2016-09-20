@@ -1,7 +1,6 @@
 # Aggiornamento
 
-This is the code that goes with with (as of yet unreleased) e-book "Multi-threaded Coding Best Practices C++, NSFW"
-(Link to the e-book will be provided upon release.)
+This is the code that goes with with (as of yet unreleased) e-book "Multi-threaded Coding Best Practices C++, NSFW" https://drive.google.com/open?id=0B0gpxVPoeL6BSzZGYUNWRHBnWTA
 
 These examples demonstrate the concepts discussed in the e-book.
 
