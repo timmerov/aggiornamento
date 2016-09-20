@@ -10,12 +10,12 @@ tk
 
 #include <aggiornamento/aggiornamento.h>
 #include <aggiornamento/log.h>
-#include <aggiornamento/thread.h>
+#include <aggiornamento/thread2.h>
 #include <container/worm.h>
 
 
-extern agm::Thread *createAlice(Worm *worm);
-extern agm::Thread *createBob(Worm *worm);
+extern agm::Thread2 *createAlice(Worm *worm);
+extern agm::Thread2 *createBob(Worm *worm);
 
 // use anonymous namespace to avoid collisions at link time.
 namespace {
@@ -33,18 +33,19 @@ int main(
     // create the containers.
     auto worm = Worm::create(kBufferSize);
 
-    // use unique_ptr so they're deleted at end of scope.
-    std::unique_ptr<Worm> auto_0(worm);
+    // store containers in a vector.
+    std::vector<agm::Container *> containers;
+    containers.push_back(worm);
 
     // create the threads.
-    std::vector<agm::Thread *> threads;
+    std::vector<agm::Thread2 *> threads;
     threads.push_back(createAlice(worm));
     threads.push_back(createBob(worm));
 
     // run the threads for 10 seconds.
-    agm::Thread::startAll(threads);
+    agm::Thread2::startAll(threads, containers);
     agm::sleep::seconds(10);
-    agm::Thread::stopAll(threads);
+    agm::Thread2::stopAll(threads, containers);
 
     return 0;
 }

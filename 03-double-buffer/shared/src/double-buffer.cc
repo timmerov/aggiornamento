@@ -57,10 +57,11 @@ namespace {
     };
 }
 
-DoubleBuffer::DoubleBuffer() {
+DoubleBuffer::DoubleBuffer() throw() :
+    agm::Container("DoubleBuffer") {
 }
 
-DoubleBuffer::~DoubleBuffer() {
+DoubleBuffer::~DoubleBuffer() throw() {
 }
 
 DoubleBuffer *DoubleBuffer::create(

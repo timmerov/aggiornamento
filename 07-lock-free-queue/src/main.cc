@@ -39,7 +39,7 @@ optimizing compilers tend to rewrite your beautiful code.
 which can have unexpected consequences.
 like your beautiful code no longer works.
 okay good.
-no go through every instruction and try to figure
+now go through every instruction and try to figure
 out what happens if there's a context switch right there.
 does your code still work?
 
@@ -87,8 +87,7 @@ int main(
 
     agm::log::init(AGM_TARGET_NAME ".log");
 
-    LOG("Hello, World!");
-    LOG("Goodbye, World!");
+    LOG("Look! A unicorn! Get it!");
 
     return 0;
 }

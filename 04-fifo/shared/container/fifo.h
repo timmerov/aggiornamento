@@ -61,4 +61,9 @@ public:
     waits for an element to be pushed if the fifo is empty.
     */
     char *getWait() throw();
+
+    /*
+    unblock all waiting threads.
+    */
+    void unblock() throw();
 };

@@ -46,7 +46,8 @@ namespace {
     };
 }
 
-Worm::Worm() {
+Worm::Worm() throw() :
+    agm::Container("WriteOnceReadMany") {
 }
 
 Worm::~Worm() {

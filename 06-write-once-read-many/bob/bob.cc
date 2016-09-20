@@ -10,7 +10,7 @@ implement the bob thread.
 #include <aggiornamento/aggiornamento.h>
 #include <aggiornamento/log.h>
 #include <aggiornamento/master.h>
-#include <aggiornamento/thread.h>
+#include <aggiornamento/thread2.h>
 #include <container/worm.h>
 
 // pick one
@@ -21,9 +21,9 @@ implement the bob thread.
 
 // use an anonymous namespace to avoid name collisions at link time.
 namespace {
-    class Bob : public agm::Thread {
+    class Bob : public agm::Thread2 {
     public:
-        Bob() throw() : Thread("Bob") {
+        Bob() throw() : Thread2("Bob") {
         }
 
         virtual ~Bob() = default;
@@ -44,7 +44,7 @@ namespace {
             auto ptr = worm_->getFullWait();
 
             // check stop condition.
-            if (isProducing() == false) {
+            if (isRunning() == false) {
                 return;
             }
 
@@ -53,18 +53,6 @@ namespace {
             agm::sleep::milliseconds(1000);
         }
 
-        virtual void drainOnce() throw() {
-            LOG_VERBOSE("Bob");
-            agm::sleep::milliseconds(100);
-        }
-
-        virtual void unblock() throw() {
-            LOG_VERBOSE("Bob");
-
-            if (isDraining()) {
-                worm_->putFull();
-            }
-        }
 
         virtual void end() throw() {
             LOG_VERBOSE("Bob");
@@ -72,7 +60,7 @@ namespace {
     };
 }
 
-agm::Thread *createBob(
+agm::Thread2 *createBob(
     Worm *worm
 ) throw() {
     auto th = new(std::nothrow) Bob;

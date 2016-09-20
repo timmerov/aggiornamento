@@ -5,7 +5,31 @@ Copyright (C) 2012-2016 tim cotter. All rights reserved.
 /**
 thread class implementation.
 
-tbd
+the thread function operates something like this:
+master                      thread
+--------------------        --------------------
+init()
+    starts thread
+    waits begun_sem
+                            begin()
+                            signal begun_sem
+                            wait start_sem
+start()
+    signal start_sem
+                            run()
+                                while isRunning
+                                    runOnce()
+stop()
+    isRunning = false
+                            maybe waiting for data
+containers unblock threads
+                            runOnce exits
+                            run exits
+                            wait finish_sem
+waitExit()
+    signal finish_sem
+    join
+                            end()
 **/
 
 #include <aggiornamento/aggiornamento.h>

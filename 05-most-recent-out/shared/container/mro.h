@@ -52,13 +52,15 @@ the easy way is to put all frames into an mro.
 
 #pragma once
 
+#include <aggiornamento/container.h>
 
-class Mro {
+
+class Mro : public agm::Container {
 protected:
-    Mro();
+    Mro() throw();
 public:
     Mro(const Mro &) = delete;
-    virtual ~Mro();
+    virtual ~Mro() throw();
 
     /*
     master thread creates the mro.

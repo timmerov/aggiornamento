@@ -11,7 +11,7 @@ implement the alice thread.
 #include <aggiornamento/log.h>
 #include <aggiornamento/master.h>
 #include <aggiornamento/string.h>
-#include <aggiornamento/thread.h>
+#include <aggiornamento/thread2.h>
 #include <container/double-buffer.h>
 
 // pick one
@@ -24,9 +24,9 @@ implement the alice thread.
 namespace {
     const auto kSugarSpice = "sugar and spice";
 
-    class Alice : public agm::Thread {
+    class Alice : public agm::Thread2 {
     public:
-        Alice() throw() : Thread("Alice") {
+        Alice() throw() : Thread2("Alice") {
         }
 
         virtual ~Alice() = default;
@@ -52,7 +52,7 @@ namespace {
 
             LOG("Alice wants to swap buffers.");
             ptr = db_->swap(ptr);
-            if (isProducing()) {
+            if (isRunning()) {
                 LOG("Oops! Alice should not have been able to swap buffers.");
             } else {
                 LOG("Alice gave up trying to swap buffers.");
@@ -61,27 +61,13 @@ namespace {
             agm::master::waitDone();
         }
 
-        virtual void drainOnce() throw() {
-            LOG_VERBOSE("Alice");
-            agm::sleep::milliseconds(100);
-        }
-
-        virtual void unblock() throw() {
-            LOG_VERBOSE("Alice");
-
-            if (isDraining()) {
-                LOG("Master told alice to give up.");
-                db_->unblock();
-            }
-        }
-
         virtual void end() throw() {
             LOG_VERBOSE("Alice");
         }
     };
 }
 
-agm::Thread *createAlice(
+agm::Thread2 *createAlice(
     DoubleBuffer *db
 ) throw() {
     auto th = new(std::nothrow) Alice;

@@ -11,7 +11,7 @@ implement the alice thread.
 #include <aggiornamento/log.h>
 #include <aggiornamento/master.h>
 #include <aggiornamento/string.h>
-#include <aggiornamento/thread.h>
+#include <aggiornamento/thread2.h>
 #include <container/message-queue.h>
 
 // pick one
@@ -24,9 +24,9 @@ implement the alice thread.
 namespace {
     const char kMeetingRequest[] = "meeting request";
 
-    class Alice : public agm::Thread {
+    class Alice : public agm::Thread2 {
     public:
-        Alice() throw() : Thread("Alice") {
+        Alice() throw() : Thread2("Alice") {
         }
 
         virtual ~Alice() = default;
@@ -52,22 +52,13 @@ namespace {
             agm::master::setDone();
         }
 
-        virtual void drainOnce() throw() {
-            LOG_VERBOSE("Alice");
-            agm::sleep::milliseconds(100);
-        }
-
-        virtual void unblock() throw() {
-            LOG_VERBOSE("Alice");
-        }
-
         virtual void end() throw() {
             LOG_VERBOSE("Alice");
         }
     };
 }
 
-agm::Thread *createAlice(
+agm::Thread2 *createAlice(
     MessageQueue *message_queue
 ) throw() {
     auto th = new(std::nothrow) Alice;

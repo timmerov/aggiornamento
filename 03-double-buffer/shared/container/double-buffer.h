@@ -30,13 +30,15 @@ etc.
 
 #pragma once
 
+#include <aggiornamento/container.h>
 
-class DoubleBuffer {
+
+class DoubleBuffer : public agm::Container {
 protected:
-    DoubleBuffer();
+    DoubleBuffer() throw();
 public:
     DoubleBuffer(const DoubleBuffer &) = delete;
-    virtual ~DoubleBuffer();
+    virtual ~DoubleBuffer() throw();
 
     /*
     master thread creates the double buffer.
@@ -68,5 +70,5 @@ public:
     the caller will need to make that determination
     some other way.
     */
-    void unblock() throw();
+    virtual void unblock() throw();
 };

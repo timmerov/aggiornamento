@@ -5,30 +5,29 @@ Copyright (C) 2012-2016 tim cotter. All rights reserved.
 /**
 thread class interface.
 
-tbd
-
 the thread function operates something like this:
 master                      thread
 --------------------        --------------------
 init()
     starts thread
-    waits begin_sem
+    waits begun_sem
                             begin()
-                            signal begin_sem
+                            signal begun_sem
                             wait start_sem
 start()
     signal start_sem
                             run()
-                                while isDraining
+                                while isRunning
                                     runOnce()
-
-
 stop()
-    isDraining = false
-
-unblock containers
-
+    isRunning = false
+                            maybe waiting for data
+containers unblock threads
+                            runOnce exits
+                            run exits
+                            wait finish_sem
 waitExit()
+    signal finish_sem
     join
                             end()
 **/

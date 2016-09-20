@@ -88,6 +88,7 @@ namespace {
         std::mutex head_mutex_;
         std::mutex tail_mutex_;
         std::condition_variable cv_;
+        bool volatile cancel_ = false;
     };
 }
 
@@ -199,6 +200,9 @@ char *Fifo::getWait() throw() {
     {
         std::unique_lock<std::mutex> lock(impl->head_mutex_);
         while (impl->head_ != impl->tail_) {
+            if (impl->cancel_) {
+                return nullptr;
+            }
             impl->cv_.wait(lock);
         }
         /*
@@ -207,10 +211,22 @@ char *Fifo::getWait() throw() {
         */
         auto head = impl->head_;
         do {
+            if (impl->cancel_) {
+                return nullptr;
+            }
             ptr = impl->data_[head];
         } while (ptr == nullptr);
         impl->data_[head] = nullptr;
         impl->head_ = (head + 1) % impl->size_;
     }
     return ptr;
+}
+
+/*
+unblock waiting threads.
+*/
+void Fifo::unblock() throw() {
+    auto impl = (FifoImpl *) this;
+    impl->cancel_ = true;
+    impl->cv_.notify_all();
 }

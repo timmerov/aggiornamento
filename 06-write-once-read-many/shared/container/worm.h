@@ -11,13 +11,15 @@ tbd
 
 #pragma once
 
+#include <aggiornamento/container.h>
 
-class Worm {
+
+class Worm : public agm::Container {
 protected:
-    Worm();
+    Worm() throw();
 public:
     Worm(const Worm &) = delete;
-    virtual ~Worm();
+    virtual ~Worm() throw();
 
     /*
     master thread creates the mro.

@@ -11,7 +11,7 @@ implement the bob thread.
 #include <aggiornamento/log.h>
 #include <aggiornamento/master.h>
 #include <aggiornamento/string.h>
-#include <aggiornamento/thread.h>
+#include <aggiornamento/thread2.h>
 #include <container/double-buffer.h>
 
 // pick one
@@ -24,9 +24,9 @@ implement the bob thread.
 namespace {
     const auto kSnipsSnails = "snips and snails";
 
-    class Bob : public agm::Thread {
+    class Bob : public agm::Thread2 {
     public:
-        Bob() throw() : Thread("Bob") {
+        Bob() throw() : Thread2("Bob") {
         }
 
         virtual ~Bob() = default;
@@ -58,22 +58,13 @@ namespace {
             agm::master::setDone();
         }
 
-        virtual void drainOnce() throw() {
-            LOG_VERBOSE("Bob");
-            agm::sleep::milliseconds(100);
-        }
-
-        virtual void unblock() throw() {
-            LOG_VERBOSE("Bob");
-        }
-
         virtual void end() throw() {
             LOG_VERBOSE("Bob");
         }
     };
 }
 
-agm::Thread *createBob(
+agm::Thread2 *createBob(
     DoubleBuffer *db
 ) throw() {
     auto th = new(std::nothrow) Bob;

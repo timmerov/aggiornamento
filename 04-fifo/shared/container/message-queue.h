@@ -20,13 +20,15 @@ putMessage
 
 #pragma once
 
+#include <aggiornamento/container.h>
 
-class MessageQueue {
+
+class MessageQueue : public agm::Container {
 protected:
-    MessageQueue();
+    MessageQueue() throw();
 public:
     MessageQueue(const MessageQueue &) = delete;
-    virtual ~MessageQueue();
+    virtual ~MessageQueue() throw();
 
     /*
     master thread creates the message queue.
@@ -82,4 +84,9 @@ public:
     waits for an element to be pushed if the fifo is empty.
     */
     char *getMessageWait() throw();
+
+    /*
+    unblock all waiting threads.
+    */
+    virtual void unblock() throw();
 };

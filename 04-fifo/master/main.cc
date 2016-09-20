@@ -10,12 +10,12 @@ two thread alice and bob exchange messages via a queue.
 
 #include <aggiornamento/aggiornamento.h>
 #include <aggiornamento/log.h>
-#include <aggiornamento/thread.h>
+#include <aggiornamento/thread2.h>
 #include <container/message-queue.h>
 
 
-extern agm::Thread *createAlice(MessageQueue *db);
-extern agm::Thread *createBob(MessageQueue *db);
+extern agm::Thread2 *createAlice(MessageQueue *db);
+extern agm::Thread2 *createBob(MessageQueue *db);
 
 // use anonymous namespace to avoid collisions at link time.
 namespace {
@@ -32,18 +32,19 @@ int main(
     agm::log::init(AGM_TARGET_NAME ".log");
 
     // create the containers.
-    auto message_queue = MessageQueue::create(kMessageSize, kMaxNumMessages);
+    auto mq = MessageQueue::create(kMessageSize, kMaxNumMessages);
 
-    // use unique_ptr so they're deleted at end of scope.
-    std::unique_ptr<MessageQueue> auto_0(message_queue);
+    // save the containers in a vector.
+    std::vector<agm::Container *> containers;
+    containers.push_back(mq);
 
     // create the threads.
-    std::vector<agm::Thread *> threads;
-    threads.push_back(createAlice(message_queue));
-    threads.push_back(createBob(message_queue));
+    std::vector<agm::Thread2 *> threads;
+    threads.push_back(createAlice(mq));
+    threads.push_back(createBob(mq));
 
     // run the threads.
-    agm::Thread::runAll(threads);
+    agm::Thread2::runAll(threads, containers);
 
     return 0;
 }

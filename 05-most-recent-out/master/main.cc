@@ -12,12 +12,12 @@ neither the alice thread nor the bob thread ever block waiting for the other.
 
 #include <aggiornamento/aggiornamento.h>
 #include <aggiornamento/log.h>
-#include <aggiornamento/thread.h>
+#include <aggiornamento/thread2.h>
 #include <container/mro.h>
 
 
-extern agm::Thread *createAlice(Mro *mro);
-extern agm::Thread *createBob(Mro *mro);
+extern agm::Thread2 *createAlice(Mro *mro);
+extern agm::Thread2 *createBob(Mro *mro);
 
 // use anonymous namespace to avoid collisions at link time.
 namespace {
@@ -35,18 +35,19 @@ int main(
     // create the containers.
     auto mro = Mro::create(kBufferSize);
 
-    // use unique_ptr so they're deleted at end of scope.
-    std::unique_ptr<Mro> auto_0(mro);
+    // store the containers in a vector.
+    std::vector<agm::Container *> containers;
+    containers.push_back(mro);
 
     // create the threads.
-    std::vector<agm::Thread *> threads;
+    std::vector<agm::Thread2 *> threads;
     threads.push_back(createAlice(mro));
     threads.push_back(createBob(mro));
 
     // run the threads for 10 seconds.
-    agm::Thread::startAll(threads);
+    agm::Thread2::startAll(threads, containers);
     agm::sleep::seconds(10);
-    agm::Thread::stopAll(threads);
+    agm::Thread2::stopAll(threads, containers);
 
     return 0;
 }

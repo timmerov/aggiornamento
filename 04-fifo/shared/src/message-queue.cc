@@ -50,10 +50,11 @@ namespace {
     };
 }
 
-MessageQueue::MessageQueue() {
+MessageQueue::MessageQueue() throw() :
+    agm::Container("MessageQueue") {
 }
 
-MessageQueue::~MessageQueue() {
+MessageQueue::~MessageQueue() throw() {
 }
 
 /*
@@ -168,4 +169,13 @@ char *MessageQueue::getMessageWait() throw() {
     auto fifo = impl->message_fifo_;
     auto ptr = fifo->getWait();
     return ptr;
+}
+
+/*
+unblock all waiting threads.
+*/
+void MessageQueue::unblock() throw() {
+    auto impl = (MessageQueueImpl *) this;
+    impl->empty_fifo_->unblock();
+    impl->message_fifo_->unblock();
 }

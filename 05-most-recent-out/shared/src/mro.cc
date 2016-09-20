@@ -87,10 +87,11 @@ namespace {
     };
 }
 
-Mro::Mro() {
+Mro::Mro() throw() :
+    agm::Container("MostRecentOut") {
 }
 
-Mro::~Mro() {
+Mro::~Mro() throw() {
 }
 
 Mro *Mro::create(
