@@ -11,9 +11,11 @@ The code is NOT production ready. For example, error checking is minimal. Handli
 
 CMake 2.8.11 or later.
 
-## Status
+## Code Organization
 
-This is a work in progress.
+The code for any given thread is quarantined in its own directory. This conforms to the best practice where the logical design matches the thread design. This structure makes it obvious where the thread boundaries are. The amount of necessary documentation is reduced.
+
+Data shared between threads is clearly identified in each example. Shared data is stored in containers. All containers are in a single directory. This structure isolates the multi-threaded parts of the project. It is relatively easy to check best practices.
 
 ## MIT License
 
