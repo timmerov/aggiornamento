@@ -38,7 +38,7 @@ disable symbols browser.
 #define STRINGIZE_(x) #x
 #define STRINGIZE(x) STRINGIZE_(x)
 
-// use it on CASTAR_TARGET
+// use it on AGM_TARGET
 #if defined(AGM_TARGET)
 #define AGM_TARGET_NAME STRINGIZE(AGM_TARGET)
 #endif
