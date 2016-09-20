@@ -3,7 +3,7 @@ Copyright (C) 2012-2016 tim cotter. All rights reserved.
 */
 
 /**
-write once read many example.
+write once-in-a-while read many example.
 
 tk
 **/

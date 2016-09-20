@@ -3,7 +3,7 @@ Copyright (C) 2012-2016 tim cotter. All rights reserved.
 */
 
 /**
-write once read many example.
+write once-in-a-while read many example.
 implement the alice thread.
 **/
 
@@ -38,18 +38,13 @@ namespace {
         }
 
         virtual void runOnce() throw() {
-            if (counter_ == 0) {
-                LOG("Alice is snoozing.");
-                agm::sleep::milliseconds(1000);
-            }
-
-            auto ptr = worm_->getEmpty();
+            auto ptr = worm_->getWriteBuffer();
             LOG("Alice puts " << counter_ << " into the worm.");
             std::string s = std::move(std::to_string(counter_));
             ++counter_;
             agm::string::copy(ptr, size_, s.c_str());
-            worm_->putFull();
-            agm::sleep::milliseconds(1000*24/60);
+            worm_->swap();
+            agm::sleep::milliseconds(900);
         }
 
         virtual void end() throw() {

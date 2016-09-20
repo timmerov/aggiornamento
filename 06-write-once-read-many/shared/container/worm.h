@@ -3,10 +3,38 @@ Copyright (C) 2012-2016 tim cotter. All rights reserved.
 */
 
 /**
-write once read many example.
+write once-in-a-while read many example.
 worm interface.
 
-tbd
+assumes single writer, multiple simultaneous readers.
+assumes writer writes rarely.
+
+protecting the data in this case causes massive contention.
+so we don't.
+the data is constant the vast majority of the time.
+the strategy is to...
+- simply read the data.
+- detect the possibility of corrupt data.
+- retry if necessary.
+
+writer usage:
+char *ptr = getWriteBuffer();
+memcpy(ptr, data, sizeof(data));
+swap();
+
+reader usage:
+int start_state;
+int end_state;
+for(;;) {
+    start_state = getState();
+    const char *ptr = getReadBuffer(start_state);
+    memcpy(data, ptr, sizeof(data));
+    end_state = getState();
+} while (start_state != end_state);
+
+caution:
+out of order execution can wreak havoc.
+out of order memory flush can wreak havoc.
 **/
 
 #pragma once
@@ -22,8 +50,8 @@ public:
     virtual ~Worm() throw();
 
     /*
-    master thread creates the mro.
-    master thread deletes the mro.
+    master thread creates the worm.
+    master thread deletes the worm.
     */
     static Worm *create(int size) throw();
 
@@ -33,35 +61,24 @@ public:
     int getSize() throw();
 
     /*
-    returns an empty buffer.
-    marks it "filling".
+    returns the write buffer.
     */
-    char *getEmpty() throw();
+    char *getWriteBuffer() throw();
 
     /*
-    full buffers are marked empty.
-    changes filling buffers to full.
-    signals the consumer thread.
+    swap the read/write buffers and update the state.
     */
-    void putFull() throw();
+    void swap() throw();
 
     /*
-    gets a full buffer.
-    marks it "emptying".
-    returns null if no buffer is full.
+    returns the state of the buffers.
+    required to get the read buffer
+    and to detect read failures.
     */
-    char *getFull() throw();
+    int getState() throw();
 
     /*
-    gets a full buffer.
-    marks it "emptying".
-    blocks if no buffer is full until
-    a full buffer is put.
+    returns the read buffer.
     */
-    char *getFullWait() throw();
-
-    /*
-    changes emptying buffers to empty.
-    */
-    void putEmpty() throw();
+    const char *getReadBuffer(int state) throw();
 };

@@ -3,7 +3,7 @@ Copyright (C) 2012-2016 tim cotter. All rights reserved.
 */
 
 /**
-write once read many example.
+write once-in-a-while read many example.
 implement the bob thread.
 **/
 
@@ -12,6 +12,8 @@ implement the bob thread.
 #include <aggiornamento/master.h>
 #include <aggiornamento/thread.h>
 #include <container/worm.h>
+
+#include <cstring>
 
 // pick one
 #undef LOG_VERBOSE
@@ -29,30 +31,34 @@ namespace {
         virtual ~Bob() = default;
 
         Worm *worm_ = nullptr;
-        bool first_pass_ = true;
+        std::string old_str_;
 
         virtual void begin() throw() {
             LOG_VERBOSE("Bob");
         }
 
         virtual void runOnce() throw() {
-            if (first_pass_) {
-                first_pass_ = false;
-                LOG("Bob is waiting.");
+            int start_state;
+            int end_state;
+            std::string new_str;
+            for(;;) {
+                start_state = worm_->getState();
+                auto ptr = worm_->getReadBuffer(start_state);
+                new_str = ptr;
+                end_state = worm_->getState();
+                if (end_state == start_state) {
+                    break;
+                }
+                LOG("Bob detected a worm collision. Retrying...");
+            }
+            if (strcmp(old_str_.c_str(), new_str.c_str()) != 0) {
+                LOG("Bob finds " << new_str << " in the worm");
+                old_str_ = std::move(new_str);
             }
 
-            auto ptr = worm_->getFullWait();
-
-            // check stop condition.
-            if (isRunning() == false) {
-                return;
-            }
-
-            LOG("Bob finds " << ptr << " in the worm");
-            worm_->putEmpty();
-            agm::sleep::milliseconds(1000);
+            // normally we'd sleep or block.
+            // but for this test, we busy loop.
         }
-
 
         virtual void end() throw() {
             LOG_VERBOSE("Bob");

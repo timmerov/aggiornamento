@@ -3,29 +3,51 @@ Copyright (C) 2012-2016 tim cotter. All rights reserved.
 */
 
 /**
-write once read many example.
+write once-in-a-while read many example.
 worm implementation.
 
-tbd
+assumes single writer, multiple simultaneous readers.
+assumes writer writes rarely.
+
+protecting the data in this case causes massive contention.
+so we don't.
+the data is constant the vast majority of the time.
+the strategy is to...
+- simply read the data.
+- detect the possibility of corrupt data.
+- retry if necessary.
+
+writer usage:
+char *ptr = getWriteBuffer();
+memcpy(ptr, data, sizeof(data));
+swap();
+
+reader usage:
+int start_state;
+int end_state;
+for(;;) {
+    start_state = getState();
+    const char *ptr = getReadBuffer(start_state);
+    memcpy(data, ptr, sizeof(data));
+    end_state = getState();
+} while (start_state != end_state);
+
+caution:
+out of order execution can wreak havoc.
+out of order memory flush can wreak havoc.
+
+state is incremented every write.
+the low order bit identifies which buffer is which.
+the LOB is the index of the read buffer.
+1-LOB is the index of the write buffer.
 **/
 
 #include <aggiornamento/aggiornamento.h>
-#include <aggiornamento/string.h>
 #include <container/worm.h>
-
-#include <condition_variable>
-#include <mutex>
 
 
 // use an anonymous namespace to avoid name collisions at link time.
 namespace {
-    enum {
-        kEmpty,
-        kFilling,
-        kFull,
-        kEmptying
-    };
-
     class WormImpl : public Worm {
     public:
         WormImpl() throw() {
@@ -39,10 +61,8 @@ namespace {
         }
 
         int size_ = 0;
-        int state_[3];
-        char *data_[3];
-        std::mutex mutex_;
-        std::condition_variable cv_;
+        int volatile state_ = 0;
+        char *data_[2];
     };
 }
 
@@ -53,19 +73,19 @@ Worm::Worm() throw() :
 Worm::~Worm() {
 }
 
+/*
+master thread creates the worm.
+master thread deletes the worm.
+*/
 Worm *Worm::create(
     int size
 ) throw() {
     auto impl = new(std::nothrow) WormImpl;
     auto stride = (size + 15) / 16 * 16;
-    auto size3 = 3*stride;
+    auto size2 = 2*stride;
     impl->size_ = size;
-    impl->state_[0] = kEmpty;
-    impl->state_[1] = kEmpty;
-    impl->state_[2] = kEmpty;
-    impl->data_[0] = new(std::nothrow) char[size3];
+    impl->data_[0] = new(std::nothrow) char[size2];
     impl->data_[1] = impl->data_[0] + stride;
-    impl->data_[2] = impl->data_[1] + stride;
     return impl;
 }
 
@@ -78,107 +98,46 @@ int Worm::getSize() throw() {
 }
 
 /*
-returns an empty buffer.
-marks it "filling".
+returns the write buffer.
 */
-char *Worm::getEmpty() throw() {
+char *Worm::getWriteBuffer() throw() {
     auto impl = (WormImpl *) this;
-    char *ptr = nullptr;
-    {
-        std::unique_lock<std::mutex> lock(impl->mutex_);
-        for (auto n = 0; n < 3; ++n) {
-            if (impl->state_[n] == kEmpty) {
-                impl->state_[n] = kFilling;
-                ptr = impl->data_[n];
-                break;
-            }
-        }
-    }
+
+    // return the write buffer.
+    auto idx = 1 - (impl->state_ & 1);
+    auto ptr = impl->data_[idx];
     return ptr;
 }
 
 /*
-full buffers are marked empty.
-changes filling buffers to full.
-signals the consumer thread.
+swap the read/write buffers and update the state.
 */
-void Worm::putFull() throw() {
+void Worm::swap() throw() {
     auto impl = (WormImpl *) this;
-    {
-        std::unique_lock<std::mutex> lock(impl->mutex_);
-        for (auto n = 0; n < 3; ++n) {
-            auto state = impl->state_[n];
-            if (state == kFull) {
-                impl->state_[n] = kEmpty;
-            }
-            if (state == kFilling) {
-                impl->state_[n] = kFull;
-            }
-        }
-    }
-    impl->cv_.notify_one();
+    ++impl->state_;
 }
 
 /*
-gets a full buffer.
-marks it "emptying".
-returns null if no buffer is full.
+returns the state of the buffers.
+required to get the read buffer
+and to detect read failures.
 */
-char *Worm::getFull() throw() {
+int Worm::getState() throw() {
     auto impl = (WormImpl *) this;
-    char *ptr = nullptr;
-    {
-        std::unique_lock<std::mutex> lock(impl->mutex_);
-        for (auto n = 0; n < 3; ++n) {
-            if (impl->state_[n] == kFull) {
-                impl->state_[n] = kEmptying;
-                ptr = impl->data_[n];
-                break;
-            }
-        }
-    }
+    return impl->state_;
+}
+
+/*
+returns the read buffer.
+*/
+const char *Worm::getReadBuffer(
+    int state
+) throw() {
+    auto impl = (WormImpl *) this;
+
+    // use the state passed to us to
+    // determine the read buffer.
+    auto idx = state & 1;
+    auto ptr = impl->data_[idx];
     return ptr;
-}
-
-/*
-gets a full buffer.
-marks it "emptying".
-blocks if no buffer is full until
-a full buffer is put.
-*/
-char *Worm::getFullWait() throw() {
-    auto impl = (WormImpl *) this;
-    char *ptr = nullptr;
-    {
-        std::unique_lock<std::mutex> lock(impl->mutex_);
-        for(;;) {
-            for (auto n = 0; n < 3; ++n) {
-                if (impl->state_[n] == kFull) {
-                    impl->state_[n] = kEmptying;
-                    ptr = impl->data_[n];
-                    break;
-                }
-            }
-            if (ptr) {
-                break;
-            }
-            impl->cv_.wait(lock);
-        }
-    }
-    return ptr;
-}
-
-/*
-changes emptying buffers to empty.
-*/
-void Worm::putEmpty() throw() {
-    auto impl = (WormImpl *) this;
-    {
-        std::unique_lock<std::mutex> lock(impl->mutex_);
-        for (auto n = 0; n < 3; ++n) {
-            if (impl->state_[n] == kEmptying) {
-                impl->state_[n] = kEmpty;
-            }
-        }
-    }
 }
