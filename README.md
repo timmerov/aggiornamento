@@ -74,9 +74,15 @@ The producer gets an empty buffer. The buffer is marked filling. There is always
 
 The consumer gets a full buffer. Waiting is optional. The full buffer is marked emptying. The consumer consumes the data in the buffer. The consumer puts the now empty buffer back into the MRO. Emptying buffers are marked empty. This function never blocks the consumer.
 
-### Write Once Read Many
+### Write Once-in-a-While Read Many
 
-tbd
+A single writer writes data to the buffer once in a while. Many readers simultaneously read the data often.
+
+Protecting the data with a mutex will cause massive contention. The next best thing is to detect when the data might be corrupt.
+
+The writer gets the current write buffer. Writes to it. Then swaps the two buffers.
+
+The reader gets the current state. Uses the state to get the read buffer. Reads from it. Then checks the state to see if it has changed. If so, the reader re-reads the data.
 
 ### Lock Free queue
 
