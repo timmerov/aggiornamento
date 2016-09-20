@@ -12,4 +12,3 @@ pushd %BUILD_DIR_64%
 popd
 
 call make-win64-release.bat
-
