@@ -38,15 +38,12 @@ namespace {
         }
 
         virtual void runOnce() throw() {
-            int start_state;
-            int end_state;
             std::string new_str;
             for(;;) {
-                start_state = worm_->getState();
-                auto ptr = worm_->getReadBuffer(start_state);
+                auto state = worm_->getState();
+                auto ptr = worm_->getReadBuffer(state);
                 new_str = ptr;
-                end_state = worm_->getState();
-                if (end_state == start_state) {
+                if (worm_->checkState(state)) {
                     break;
                 }
                 LOG("Bob detected a worm collision. Retrying...");

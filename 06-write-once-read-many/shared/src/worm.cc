@@ -23,14 +23,12 @@ memcpy(ptr, data, sizeof(data));
 swap();
 
 reader usage:
-int start_state;
-int end_state;
+int state;
 for(;;) {
-    start_state = getState();
-    const char *ptr = getReadBuffer(start_state);
+    state = getStartState();
+    const char *ptr = getReadBuffer(state);
     memcpy(data, ptr, sizeof(data));
-    end_state = getState();
-} while (start_state != end_state);
+} while (checkState(state));
 
 caution:
 out of order execution can wreak havoc.
@@ -44,6 +42,8 @@ the LOB is the index of the read buffer.
 
 #include <aggiornamento/aggiornamento.h>
 #include <container/worm.h>
+
+#include <atomic>
 
 
 // use an anonymous namespace to avoid name collisions at link time.
@@ -114,6 +114,15 @@ swap the read/write buffers and update the state.
 */
 void Worm::swap() throw() {
     auto impl = (WormImpl *) this;
+
+    /*
+    a release fence forces completion of all pending
+    reads and writes before the next write.
+
+    in this case, the writer's new data is written
+    before the state is changed.
+    */
+    atomic_thread_fence(std::memory_order_release);
     ++impl->state_;
 }
 
@@ -124,7 +133,38 @@ and to detect read failures.
 */
 int Worm::getState() throw() {
     auto impl = (WormImpl *) this;
-    return impl->state_;
+
+    /*
+    an acquire fence forces completion of all pending
+    reads before the next read or write.
+
+    in this case, the state is read before the the
+    reader reads the data.
+    */
+    auto state = impl->state_;
+    atomic_thread_fence(std::memory_order_acquire);
+    return state;
+}
+
+/*
+returns true if the current state is the same.
+returns false if the current state changed.
+*/
+bool Worm::checkState(
+    int start_state
+) throw() {
+    auto impl = (WormImpl *) this;
+
+    /*
+    an acquire fence forces completion of all pending
+    reads before the next read or write.
+
+    in this case, the reader's reads are completed
+    before the state is re-read and tested.
+    */
+    atomic_thread_fence(std::memory_order_acquire);
+    auto end_state = impl->state_;
+    return (start_state == end_state);
 }
 
 /*

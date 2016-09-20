@@ -23,14 +23,12 @@ memcpy(ptr, data, sizeof(data));
 swap();
 
 reader usage:
-int start_state;
-int end_state;
+int state;
 for(;;) {
-    start_state = getState();
-    const char *ptr = getReadBuffer(start_state);
+    state = getStartState();
+    const char *ptr = getReadBuffer(state);
     memcpy(data, ptr, sizeof(data));
-    end_state = getState();
-} while (start_state != end_state);
+} while (checkState(state));
 
 caution:
 out of order execution can wreak havoc.
@@ -76,6 +74,12 @@ public:
     and to detect read failures.
     */
     int getState() throw();
+
+    /*
+    returns true if the current state is the same.
+    returns false if the current state changed.
+    */
+    bool checkState(int state) throw();
 
     /*
     returns the read buffer.
