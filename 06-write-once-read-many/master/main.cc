@@ -5,7 +5,11 @@ Copyright (C) 2012-2016 tim cotter. All rights reserved.
 /**
 write once-in-a-while read many example.
 
-tk
+alice writes a number string to the buffer every 900 ms.
+bob busy loops reading the number string.
+bob logs when it changes.
+bob logs when he detects a collision and his data might
+be corrupt.
 **/
 
 #include <aggiornamento/aggiornamento.h>

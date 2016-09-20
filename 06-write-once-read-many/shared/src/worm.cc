@@ -30,14 +30,15 @@ for(;;) {
     memcpy(data, ptr, sizeof(data));
 } while (checkState(state));
 
-caution:
-out of order execution can wreak havoc.
-out of order memory flush can wreak havoc.
-
 state is incremented every write.
 the low order bit identifies which buffer is which.
 the LOB is the index of the read buffer.
 1-LOB is the index of the write buffer.
+
+use memory fences to ensure...
+- data is written to the buffer before the state is updated.
+- the start state is read before data is read from the buffer.
+- data is read from the buffer before the end state is read.
 **/
 
 #include <aggiornamento/aggiornamento.h>

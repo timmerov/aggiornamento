@@ -29,10 +29,6 @@ for(;;) {
     const char *ptr = getReadBuffer(state);
     memcpy(data, ptr, sizeof(data));
 } while (checkState(state));
-
-caution:
-out of order execution can wreak havoc.
-out of order memory flush can wreak havoc.
 **/
 
 #pragma once
