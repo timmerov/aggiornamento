@@ -11,7 +11,7 @@ implement the alice thread.
 #include <aggiornamento/log.h>
 #include <aggiornamento/master.h>
 #include <aggiornamento/string.h>
-#include <aggiornamento/thread2.h>
+#include <aggiornamento/thread.h>
 #include <container/double-buffer.h>
 
 // pick one
@@ -24,9 +24,9 @@ implement the alice thread.
 namespace {
     const auto kSugarSpice = "sugar and spice";
 
-    class Alice : public agm::Thread2 {
+    class Alice : public agm::Thread {
     public:
-        Alice() throw() : Thread2("Alice") {
+        Alice() throw() : Thread("Alice") {
         }
 
         virtual ~Alice() = default;
@@ -67,7 +67,7 @@ namespace {
     };
 }
 
-agm::Thread2 *createAlice(
+agm::Thread *createAlice(
     DoubleBuffer *db
 ) throw() {
     auto th = new(std::nothrow) Alice;

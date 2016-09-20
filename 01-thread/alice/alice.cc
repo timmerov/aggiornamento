@@ -16,7 +16,7 @@ interface funcions.
 #include <aggiornamento/aggiornamento.h>
 #include <aggiornamento/log.h>
 #include <aggiornamento/master.h>
-#include <aggiornamento/thread2.h>
+#include <aggiornamento/thread.h>
 
 // pick one
 #undef LOG_VERBOSE
@@ -26,9 +26,9 @@ interface funcions.
 
 // use an anonymous namespace to avoid name collisions at link time.
 namespace {
-    class Alice : public agm::Thread2 {
+    class Alice : public agm::Thread {
     public:
-        Alice() throw() : Thread2("Alice") {
+        Alice() throw() : Thread("Alice") {
         }
 
         virtual ~Alice() throw() {
@@ -53,6 +53,6 @@ namespace {
     };
 }
 
-agm::Thread2 *createAlice() throw() {
+agm::Thread *createAlice() throw() {
     return new(std::nothrow) Alice;
 }

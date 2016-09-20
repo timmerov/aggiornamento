@@ -16,12 +16,12 @@ also demonstrates how to unblock a thread.
 
 #include <aggiornamento/aggiornamento.h>
 #include <aggiornamento/log.h>
-#include <aggiornamento/thread2.h>
+#include <aggiornamento/thread.h>
 #include <container/double-buffer.h>
 
 
-extern agm::Thread2 *createAlice(DoubleBuffer *db);
-extern agm::Thread2 *createBob(DoubleBuffer *db);
+extern agm::Thread *createAlice(DoubleBuffer *db);
+extern agm::Thread *createBob(DoubleBuffer *db);
 
 // use anonymous namespace to avoid collisions at link time.
 namespace {
@@ -44,12 +44,12 @@ int main(
     containers.push_back(db);
 
     // create the threads.
-    std::vector<agm::Thread2 *> threads;
+    std::vector<agm::Thread *> threads;
     threads.push_back(createAlice(db));
     threads.push_back(createBob(db));
 
     // run the threads.
-    agm::Thread2::runAll(threads, containers);
+    agm::Thread::runAll(threads, containers);
 
     return 0;
 }

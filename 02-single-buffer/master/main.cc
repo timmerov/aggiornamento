@@ -14,13 +14,13 @@ in the second part, the put things into and take things out of an airlock.
 #include <aggiornamento/aggiornamento.h>
 #include <aggiornamento/log.h>
 #include <aggiornamento/master.h>
-#include <aggiornamento/thread2.h>
+#include <aggiornamento/thread.h>
 #include <container/airlock.h>
 #include <container/trunk.h>
 
 
-extern agm::Thread2 *createAlice(Airlock *airlock, Trunk *trunk);
-extern agm::Thread2 *createBob(Airlock *airlock, Trunk *trunk);
+extern agm::Thread *createAlice(Airlock *airlock, Trunk *trunk);
+extern agm::Thread *createBob(Airlock *airlock, Trunk *trunk);
 
 // use anonymous namespace to avoid collisions at link time.
 namespace {
@@ -45,14 +45,14 @@ int main(
     containers.push_back(trunk);
 
     // create the threads.
-    std::vector<agm::Thread2 *> threads;
+    std::vector<agm::Thread *> threads;
     threads.push_back(createAlice(airlock, trunk));
     threads.push_back(createBob(airlock, trunk));
 
     // run the threads.
-    agm::Thread2::startAll(threads, containers);
+    agm::Thread::startAll(threads, containers);
     agm::master::waitDone();
-    agm::Thread2::stopAll(threads, containers);
+    agm::Thread::stopAll(threads, containers);
 
     return 0;
 }

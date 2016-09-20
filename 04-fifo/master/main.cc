@@ -10,12 +10,12 @@ two thread alice and bob exchange messages via a queue.
 
 #include <aggiornamento/aggiornamento.h>
 #include <aggiornamento/log.h>
-#include <aggiornamento/thread2.h>
+#include <aggiornamento/thread.h>
 #include <container/message-queue.h>
 
 
-extern agm::Thread2 *createAlice(MessageQueue *db);
-extern agm::Thread2 *createBob(MessageQueue *db);
+extern agm::Thread *createAlice(MessageQueue *db);
+extern agm::Thread *createBob(MessageQueue *db);
 
 // use anonymous namespace to avoid collisions at link time.
 namespace {
@@ -39,12 +39,12 @@ int main(
     containers.push_back(mq);
 
     // create the threads.
-    std::vector<agm::Thread2 *> threads;
+    std::vector<agm::Thread *> threads;
     threads.push_back(createAlice(mq));
     threads.push_back(createBob(mq));
 
     // run the threads.
-    agm::Thread2::runAll(threads, containers);
+    agm::Thread::runAll(threads, containers);
 
     return 0;
 }

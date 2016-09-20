@@ -11,7 +11,7 @@ implement the bob thread.
 #include <aggiornamento/log.h>
 #include <aggiornamento/master.h>
 #include <aggiornamento/string.h>
-#include <aggiornamento/thread2.h>
+#include <aggiornamento/thread.h>
 #include <container/airlock.h>
 #include <container/trunk.h>
 
@@ -26,9 +26,9 @@ namespace {
     const auto kDirtyShirt = "dirty shirt";
     const auto kFood = "food";
 
-    class Bob : public agm::Thread2 {
+    class Bob : public agm::Thread {
     public:
-        Bob() throw() : Thread2("Bob") {
+        Bob() throw() : Thread("Bob") {
         }
 
         virtual ~Bob() = default;
@@ -94,7 +94,7 @@ namespace {
     };
 }
 
-agm::Thread2 *createBob(
+agm::Thread *createBob(
     Airlock *airlock,
     Trunk *trunk
 ) throw() {

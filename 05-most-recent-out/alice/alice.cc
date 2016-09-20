@@ -11,7 +11,7 @@ implement the alice thread.
 #include <aggiornamento/log.h>
 #include <aggiornamento/master.h>
 #include <aggiornamento/string.h>
-#include <aggiornamento/thread2.h>
+#include <aggiornamento/thread.h>
 #include <container/mro.h>
 
 // pick one
@@ -22,9 +22,9 @@ implement the alice thread.
 
 // use an anonymous namespace to avoid name collisions at link time.
 namespace {
-    class Alice : public agm::Thread2 {
+    class Alice : public agm::Thread {
     public:
-        Alice() throw() : Thread2("Alice") {
+        Alice() throw() : Thread("Alice") {
         }
 
         virtual ~Alice() = default;
@@ -58,7 +58,7 @@ namespace {
     };
 }
 
-agm::Thread2 *createAlice(
+agm::Thread *createAlice(
     Mro *mro
 ) throw() {
     auto th = new(std::nothrow) Alice;

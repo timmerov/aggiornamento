@@ -10,7 +10,7 @@ implement the bob thread.
 #include <aggiornamento/aggiornamento.h>
 #include <aggiornamento/log.h>
 #include <aggiornamento/master.h>
-#include <aggiornamento/thread2.h>
+#include <aggiornamento/thread.h>
 #include <container/mro.h>
 
 // pick one
@@ -21,9 +21,9 @@ implement the bob thread.
 
 // use an anonymous namespace to avoid name collisions at link time.
 namespace {
-    class Bob : public agm::Thread2 {
+    class Bob : public agm::Thread {
     public:
-        Bob() throw() : Thread2("Bob") {
+        Bob() throw() : Thread("Bob") {
         }
 
         virtual ~Bob() = default;
@@ -59,7 +59,7 @@ namespace {
     };
 }
 
-agm::Thread2 *createBob(
+agm::Thread *createBob(
     Mro *mro
 ) throw() {
     auto th = new(std::nothrow) Bob;

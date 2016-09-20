@@ -11,7 +11,7 @@ implement the bob thread.
 #include <aggiornamento/log.h>
 #include <aggiornamento/master.h>
 #include <aggiornamento/string.h>
-#include <aggiornamento/thread2.h>
+#include <aggiornamento/thread.h>
 #include <container/message-queue.h>
 
 // pick one
@@ -24,9 +24,9 @@ implement the bob thread.
 namespace {
     const auto kSnipsSnails = "snips and snails";
 
-    class Bob : public agm::Thread2 {
+    class Bob : public agm::Thread {
     public:
-        Bob() throw() : Thread2("Bob") {
+        Bob() throw() : Thread("Bob") {
         }
 
         virtual ~Bob() = default;
@@ -68,7 +68,7 @@ namespace {
     };
 }
 
-agm::Thread2 *createBob(
+agm::Thread *createBob(
     MessageQueue *message_queue
 ) throw() {
     auto th = new(std::nothrow) Bob;
