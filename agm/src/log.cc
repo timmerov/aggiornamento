@@ -9,6 +9,8 @@ implementation of utilities and platform abstractions.
 #include <aggiornamento/aggiornamento.h>
 #include <aggiornamento/log.h>
 
+#include <algorithm>
+#include <cctype>
 #include <cstring>
 #include <fstream>
 #include <mutex>
@@ -54,19 +56,19 @@ namespace {
         s += ' ';
         for (auto i = 0; i < count; ++i) {
             unsigned char x = ptr[i];
-            auto ch1 = hexdigits[x>>4];
-            auto ch2 = hexdigits[x&0xf];
-            s += ch1;
-            s += ch2;
+            auto ch5 = hexdigits[x>>4];
+            auto ch6 = hexdigits[x&0xf];
+            s += ch5;
+            s += ch6;
             s += ' ';
         }
         for (auto i = 0; i < count; ++i) {
-            char ch = ptr[i];
-            unsigned char uch = ch; // wtf?
+            char ch7 = ptr[i];
+            unsigned char uch = ch7; // wtf?
             if (std::isprint(uch) == false) {
-                ch = '.';
+                ch7 = '.';
             }
-            s += ch;
+            s += ch7;
         }
         LOG(s.c_str());
     }

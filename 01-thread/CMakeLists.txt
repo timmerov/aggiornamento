@@ -34,6 +34,10 @@ include_directories(${INCS})
 # add the libraries
 set(LIBS
     agm
-    pthread
 )
+if(${AGM_UNIX})
+	set(LIBS ${LIBS}
+		pthread
+	)
+endif()
 target_link_libraries(${THIS_TARGET_NAME} ${LIBS})
