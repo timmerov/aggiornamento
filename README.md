@@ -9,6 +9,7 @@ The code is NOT production ready. For example, error checking is minimal. Handli
 ## Pre-requisites
 
 CMake 2.8.11 or later.
+c++11 compiler.
 
 ## Code Organization
 
