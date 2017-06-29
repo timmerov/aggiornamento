@@ -48,16 +48,16 @@ waitExit()
 namespace agm {
     class Thread {
     public:
-        Thread(const char *name) throw();
+        Thread(const char *name) noexcept;
         Thread(const Thread &) = delete;
-        virtual ~Thread() throw();
+        virtual ~Thread() noexcept;
 
         /**** public api ****/
 
         /*
         returns the name of the thread.
         */
-        std::string getName() const throw();
+        std::string getName() const noexcept;
 
         /**** api for the master thread that creates this thread ****/
 
@@ -67,14 +67,14 @@ namespace agm {
         the thread's begin function is called.
         the thread is blocked until start is called.
         */
-        void init() throw();
+        void init() noexcept;
 
         /*
         called by master thread.
         tells the thread to start.
         the thread's run function is called.
         */
-        void start() throw();
+        void start() noexcept;
 
         /*
         called by master thread.
@@ -84,14 +84,14 @@ namespace agm {
         the thread's run routine should return.
         the thread is blocked until waitExit is called.
         */
-        void stop() throw();
+        void stop() noexcept;
 
         /*
         called by the master thread.
         waits for the thread to exit (join, teminate).
         the thread's end function is called.
         */
-        void waitExit() throw();
+        void waitExit() noexcept;
 
         /*
         called by master thread.
@@ -101,7 +101,7 @@ namespace agm {
         static void startAll(
             std::vector<Thread *> &threads,
             std::vector<Container *> &containers
-        ) throw();
+        ) noexcept;
 
         /*
         called by master thread.
@@ -111,7 +111,7 @@ namespace agm {
         static void stopAll(
             std::vector<Thread *> &threads,
             std::vector<Container *> &containers
-        ) throw();
+        ) noexcept;
 
         /*
         called by master thread.
@@ -123,14 +123,14 @@ namespace agm {
         static void runAll(
             std::vector<Thread *> &threads,
             std::vector<Container *> &containers
-        ) throw();
+        ) noexcept;
 
         /**** api for the created thread ****/
 
         /*
         tells run and drain to stop.
         */
-        bool isRunning() throw();
+        bool isRunning() noexcept;
 
         /**** api that can be implemented by the created thread. ****/
 
@@ -139,7 +139,7 @@ namespace agm {
         perform initialization like allocate memory.
         do not produce nor consume data.
         */
-        virtual void begin() throw() {
+        virtual void begin() noexcept {
         }
 
         /*
@@ -147,7 +147,7 @@ namespace agm {
         default implementation is to call
         runOnce as long as isRunning is true;
         */
-        virtual void run() throw();
+        virtual void run() noexcept;
 
         /*
         called by created thread.
@@ -158,7 +158,7 @@ namespace agm {
         runOnce should sleep or block if it has nothing to do.
         otherwise the thread could busy-loop.
         */
-        virtual void runOnce() throw() {
+        virtual void runOnce() noexcept {
         }
 
         /*
@@ -167,7 +167,7 @@ namespace agm {
         like free memory.
         do not produce nor consume data.
         */
-        virtual void end() throw() {
+        virtual void end() noexcept {
         }
 
     private:
@@ -178,6 +178,6 @@ namespace agm {
         Semaphore finish_sem_;
         bool is_running_;
 
-        friend void runThread2(Thread *thread) throw();
+        friend void runThread2(Thread *thread) noexcept;
     };
 }

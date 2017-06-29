@@ -51,13 +51,13 @@ use memory fences to ensure...
 namespace {
     class WormImpl : public Worm {
     public:
-        WormImpl() throw() {
+        WormImpl() noexcept {
             data_[0] = nullptr;
         }
 
         WormImpl(const WormImpl &) = delete;
 
-        virtual ~WormImpl() throw() {
+        virtual ~WormImpl() noexcept {
             delete[] data_[0];
         }
 
@@ -67,7 +67,7 @@ namespace {
     };
 }
 
-Worm::Worm() throw() :
+Worm::Worm() noexcept :
     agm::Container("WriteOnceReadMany") {
 }
 
@@ -80,7 +80,7 @@ master thread deletes the worm.
 */
 Worm *Worm::create(
     int size
-) throw() {
+) noexcept {
     auto impl = new(std::nothrow) WormImpl;
     auto stride = (size + 15) / 16 * 16;
     auto size2 = 2*stride;
@@ -93,7 +93,7 @@ Worm *Worm::create(
 /*
 returns the size of the buffer.
 */
-int Worm::getSize() throw() {
+int Worm::getSize() noexcept {
     auto impl = (WormImpl *) this;
     return impl->size_;
 }
@@ -101,7 +101,7 @@ int Worm::getSize() throw() {
 /*
 returns the write buffer.
 */
-char *Worm::getWriteBuffer() throw() {
+char *Worm::getWriteBuffer() noexcept {
     auto impl = (WormImpl *) this;
 
     // return the write buffer.
@@ -113,7 +113,7 @@ char *Worm::getWriteBuffer() throw() {
 /*
 swap the read/write buffers and update the state.
 */
-void Worm::swap() throw() {
+void Worm::swap() noexcept {
     auto impl = (WormImpl *) this;
 
     /*
@@ -132,7 +132,7 @@ returns the state of the buffers.
 required to get the read buffer
 and to detect read failures.
 */
-int Worm::getState() throw() {
+int Worm::getState() noexcept {
     auto impl = (WormImpl *) this;
 
     /*
@@ -153,7 +153,7 @@ returns false if the current state changed.
 */
 bool Worm::checkState(
     int start_state
-) throw() {
+) noexcept {
     auto impl = (WormImpl *) this;
 
     /*
@@ -173,7 +173,7 @@ returns the read buffer.
 */
 const char *Worm::getReadBuffer(
     int state
-) throw() {
+) noexcept {
     auto impl = (WormImpl *) this;
 
     // use the state passed to us to

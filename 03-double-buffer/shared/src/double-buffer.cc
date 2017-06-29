@@ -44,7 +44,7 @@ namespace {
         DoubleBufferImpl() = default;
         DoubleBufferImpl(const DoubleBufferImpl &) = delete;
 
-        virtual ~DoubleBufferImpl() throw() {
+        virtual ~DoubleBufferImpl() noexcept {
             delete[] data0_;
             delete[] data1_;
         }
@@ -57,16 +57,16 @@ namespace {
     };
 }
 
-DoubleBuffer::DoubleBuffer() throw() :
+DoubleBuffer::DoubleBuffer() noexcept :
     agm::Container("DoubleBuffer") {
 }
 
-DoubleBuffer::~DoubleBuffer() throw() {
+DoubleBuffer::~DoubleBuffer() noexcept {
 }
 
 DoubleBuffer *DoubleBuffer::create(
     int size
-) throw() {
+) noexcept {
     auto impl = new(std::nothrow) DoubleBufferImpl;
     impl->size_ = size;
     impl->data0_ = new(std::nothrow) char[size];
@@ -77,7 +77,7 @@ DoubleBuffer *DoubleBuffer::create(
 /*
 return size of buffer.
 */
-int DoubleBuffer::getSize() throw() {
+int DoubleBuffer::getSize() noexcept {
     auto impl = (DoubleBufferImpl *) this;
     return impl->size_;
 }
@@ -87,7 +87,7 @@ get exclusive access to one of the buffers.
 */
 char *DoubleBuffer::acquire(
     int side
-) throw() {
+) noexcept {
     auto impl = (DoubleBufferImpl *) this;
     if (side == 0) {
         return impl->data0_;
@@ -103,7 +103,7 @@ swap buffers with the other thread.
 */
 char *DoubleBuffer::swap(
     const char *buffer
-) throw() {
+) noexcept {
     /*
     signal this buffer's semaphore.
     wait for the other buffer's semaphore.
@@ -131,7 +131,7 @@ it was unblocked.
 the caller will need to make that determination
 some other way.
 */
-void DoubleBuffer::unblock() throw() {
+void DoubleBuffer::unblock() noexcept {
     /*
     signal both semaphores to unblock both threads.
     */

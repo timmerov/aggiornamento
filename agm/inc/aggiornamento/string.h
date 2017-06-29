@@ -29,7 +29,7 @@ namespace agm {
         excess characters in src will be truncated.
         custom implementation.
         */
-        void copy(char *dst, int dst_size, const char *src) throw();
+        void copy(char *dst, int dst_size, const char *src) noexcept;
 
         /*
         safe string copy that uses template magic to divine the size parameter.
@@ -41,7 +41,7 @@ namespace agm {
         void copy(
            char (&dst)[size],
            const char *src
-        ) throw() {
+        ) noexcept {
             agm::string::copy(dst, size, src);
         }
 
@@ -51,7 +51,7 @@ namespace agm {
         excess characters in src will be truncated.
         custom implementation.
         */
-        void cat(char *dst, int dst_size, const char *src) throw();
+        void cat(char *dst, int dst_size, const char *src) noexcept;
 
         /*
         safe string concatenation that uses template magic to divine the size parameter.
@@ -63,7 +63,7 @@ namespace agm {
         void cat(
            char (&dst)[size],
            const char *src
-        ) throw() {
+        ) noexcept {
             agm::string::cat(dst, size, src);
         }
 
@@ -73,7 +73,7 @@ namespace agm {
         on all other platforms: calls strcasecmp
         because microsoft
         */
-        int compare_case(const char *s1, const char *s2) throw();
+        int compare_case(const char *s1, const char *s2) noexcept;
 
         /*
         case insensitve compare
@@ -81,7 +81,7 @@ namespace agm {
         on all other platforms: calls strncasecmp
         because microsoft
         */
-        int compare_case(const char *s1, const char *s2, int len) throw();
+        int compare_case(const char *s1, const char *s2, int len) noexcept;
 
         /*
         tokenize a string
@@ -89,7 +89,7 @@ namespace agm {
         on all other platforms: calls strtok_r
         because microsoft
         */
-        char *tokenize(char *token, const char *delimiters, char **context) throw();
+        char *tokenize(char *token, const char *delimiters, char **context) noexcept;
 
         /*
         formatted print a list of arguments
@@ -100,7 +100,7 @@ namespace agm {
         written to sufficiently large buffer.
         note this is different from what microsoft's vsprintf_s returns.
         */
-        int vprintf(char *buffer, int size, const char *format, va_list args) throw();
+        int vprintf(char *buffer, int size, const char *format, va_list args) noexcept;
 
         /*
         formatted print a list of arguments
@@ -110,7 +110,7 @@ namespace agm {
            char (&buffer)[size],
            const char *format,
            va_list args
-        ) throw() {
+        ) noexcept {
             return agm::string::vprintf(buffer, size, format, args);
         }
 
@@ -121,7 +121,7 @@ namespace agm {
         written to a sufficiently large buffer.
         note this is different from what microsoft's vsprintf_s returns.
         */
-        int printf(char *buffer, int size, const char *format, ...) throw();
+        int printf(char *buffer, int size, const char *format, ...) noexcept;
 
         /*
         formatted print a list of arguments
@@ -134,7 +134,7 @@ namespace agm {
            char (&buffer)[size],
            const char *format,
            ...
-        ) throw() {
+        ) noexcept {
             va_list args;
             va_start(args, format);
             auto ret = agm::string::vprintf(buffer, size, format, args );

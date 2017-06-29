@@ -35,31 +35,31 @@ etc.
 
 class DoubleBuffer : public agm::Container {
 protected:
-    DoubleBuffer() throw();
+    DoubleBuffer() noexcept;
 public:
     DoubleBuffer(const DoubleBuffer &) = delete;
-    virtual ~DoubleBuffer() throw();
+    virtual ~DoubleBuffer() noexcept;
 
     /*
     master thread creates the double buffer.
     master thread deletes the double buffer.
     */
-    static DoubleBuffer *create(int size) throw();
+    static DoubleBuffer *create(int size) noexcept;
 
     /*
     returns the size of a buffer.
     */
-    int getSize() throw();
+    int getSize() noexcept;
 
     /*
     get exclusive access to one of the buffers.
     */
-    char *acquire(int side) throw();
+    char *acquire(int side) noexcept;
 
     /*
     swap buffers with the other thread.
     */
-    char *swap(const char *buffer) throw();
+    char *swap(const char *buffer) noexcept;
 
     /*
     unblock both threads as if the other thread
@@ -70,5 +70,5 @@ public:
     the caller will need to make that determination
     some other way.
     */
-    virtual void unblock() throw();
+    virtual void unblock() noexcept;
 };

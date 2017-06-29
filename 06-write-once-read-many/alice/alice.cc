@@ -24,7 +24,7 @@ implement the alice thread.
 namespace {
     class Alice : public agm::Thread {
     public:
-        Alice() throw() : Thread("Alice") {
+        Alice() noexcept : Thread("Alice") {
         }
 
         virtual ~Alice() = default;
@@ -33,11 +33,11 @@ namespace {
         int size_ = 0;
         int counter_ = 0;
 
-        virtual void begin() throw() {
+        virtual void begin() noexcept {
             size_ = worm_->getSize();
         }
 
-        virtual void runOnce() throw() {
+        virtual void runOnce() noexcept {
             auto ptr = worm_->getWriteBuffer();
             LOG("Alice puts " << counter_ << " into the worm.");
             std::string s = std::move(std::to_string(counter_));
@@ -47,7 +47,7 @@ namespace {
             agm::sleep::milliseconds(900);
         }
 
-        virtual void end() throw() {
+        virtual void end() noexcept {
             LOG_VERBOSE("Alice");
         }
     };
@@ -55,7 +55,7 @@ namespace {
 
 agm::Thread *createAlice(
     Worm *worm
-) throw() {
+) noexcept {
     auto th = new(std::nothrow) Alice;
     th->worm_ = worm;
     return th;

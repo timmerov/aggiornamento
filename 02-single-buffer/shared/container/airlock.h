@@ -41,37 +41,37 @@ that acquires on construction and releases on destruction.
 
 class Airlock : public agm::Container {
 protected:
-    Airlock() throw();
+    Airlock() noexcept;
 public:
     Airlock(const Airlock &) = delete;
-    virtual ~Airlock() throw();
+    virtual ~Airlock() noexcept;
 
     /*
     master thread creates the airlock.
     master thread deletes the airlock.
     */
-    static Airlock *create(int size) throw();
+    static Airlock *create(int size) noexcept;
 
     /*
     returns the size of the buffer.
     */
-    int getSize() throw();
+    int getSize() noexcept;
 
     /*
     get exclusive access to the buffer.
     blocks if another thread has exclusive access.
     not re-entrant.
     */
-    char *acquire(int side) throw();
+    char *acquire(int side) noexcept;
 
     /*
     release the buffer so it can be used by other threads
     */
-    void release(int side) throw();
+    void release(int side) noexcept;
 
     /*
     Container interface.
     unblock threads.
     */
-    virtual void unblock() throw();
+    virtual void unblock() noexcept;
 };

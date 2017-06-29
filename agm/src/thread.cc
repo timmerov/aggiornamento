@@ -45,7 +45,7 @@ waitExit()
 
 // use an anonymous namespace to avoid name collisions at link time
 namespace agm {
-    void runThread2(agm::Thread *thread) throw() {
+    void runThread2(agm::Thread *thread) noexcept {
         LOG_VERBOSE(thread->getName() << " begin...");
         thread->begin();
         LOG_VERBOSE(thread->getName() << " begin done, wait start...");
@@ -64,7 +64,7 @@ namespace agm {
 
 agm::Thread::Thread(
     const char *name
-) throw() :
+) noexcept :
     name_(name),
     thread_(nullptr),
     begun_sem_(),
@@ -73,31 +73,31 @@ agm::Thread::Thread(
     is_running_(true) {
 }
 
-agm::Thread::~Thread() throw() {
+agm::Thread::~Thread() noexcept {
     /*
     at this point thread_ should be null.
     probably want to whine if it isn't.
     */
 }
 
-std::string agm::Thread::getName() const throw() {
+std::string agm::Thread::getName() const noexcept {
     return name_;
 }
 
-void agm::Thread::init() throw() {
+void agm::Thread::init() noexcept {
     thread_ = new std::thread(runThread2, this);
     begun_sem_.waitConsume();
 }
 
-void agm::Thread::start() throw() {
+void agm::Thread::start() noexcept {
     start_sem_.signal();
 }
 
-void agm::Thread::stop() throw() {
+void agm::Thread::stop() noexcept {
     is_running_ = false;
 }
 
-void agm::Thread::waitExit() throw() {
+void agm::Thread::waitExit() noexcept {
     finish_sem_.signal();
     if (thread_->joinable()) {
         thread_->join();
@@ -109,7 +109,7 @@ void agm::Thread::waitExit() throw() {
 void agm::Thread::startAll(
     std::vector<Thread *> &threads,
     std::vector<Container *> &containers
-) throw() {
+) noexcept {
     for (auto it: containers) {
         LOG_VERBOSE(it->getName() << " init...");
         it->init();
@@ -130,7 +130,7 @@ void agm::Thread::startAll(
 void agm::Thread::stopAll(
     std::vector<Thread *> &threads,
     std::vector<Container *> &containers
-) throw() {
+) noexcept {
     for (auto it = threads.rbegin(); it != threads.rend(); ++it) {
         auto th = *it;
         LOG_VERBOSE(th->getName() << " stop...");
@@ -169,17 +169,17 @@ void agm::Thread::stopAll(
 void agm::Thread::runAll(
     std::vector<Thread *> &threads,
     std::vector<Container *> &containers
-) throw() {
+) noexcept {
     startAll(threads, containers);
     master::waitDone();
     stopAll(threads, containers);
 }
 
-bool agm::Thread::isRunning() throw() {
+bool agm::Thread::isRunning() noexcept {
     return is_running_;
 }
 
-void agm::Thread::run() throw() {
+void agm::Thread::run() noexcept {
     while (isRunning()) {
         runOnce();
     }

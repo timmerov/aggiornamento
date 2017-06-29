@@ -28,7 +28,7 @@ namespace {
 
     class Bob : public agm::Thread {
     public:
-        Bob() throw() : Thread("Bob") {
+        Bob() noexcept : Thread("Bob") {
         }
 
         virtual ~Bob() = default;
@@ -40,7 +40,7 @@ namespace {
         Airlock *airlock_ = nullptr;
         int airlock_size_ = 0;
 
-        virtual void begin() throw() {
+        virtual void begin() noexcept {
             LOG("Bob arrives at the airlock.");
 
             trunk_size_ = trunk_->getSize();
@@ -49,7 +49,7 @@ namespace {
             airlock_size_ = airlock_->getSize();
         }
 
-        virtual void run() throw() {
+        virtual void run() noexcept {
             agm::sleep::milliseconds(500);
             trunk_->getString(trunk_buffer_, trunk_size_);
             LOG("Bob finds " << trunk_buffer_ << " in the trunk");
@@ -84,7 +84,7 @@ namespace {
             agm::master::waitDone();
         }
 
-        virtual void end() throw() {
+        virtual void end() noexcept {
             LOG("Bob went home.");
 
             trunk_size_ = 0;
@@ -97,7 +97,7 @@ namespace {
 agm::Thread *createBob(
     Airlock *airlock,
     Trunk *trunk
-) throw() {
+) noexcept {
     auto th = new(std::nothrow) Bob;
     th->airlock_ = airlock;
     th->trunk_ = trunk;

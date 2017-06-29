@@ -28,7 +28,7 @@ namespace {
 
 int main(
     int argc, char *argv[]
-) throw() {
+) noexcept {
     (void) argc;
     (void) argv;
 

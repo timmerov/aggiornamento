@@ -18,11 +18,11 @@ binary semaphore.
 //#define LOG_VERBOSE(...)
 
 
-bool agm::Semaphore::test() throw() {
+bool agm::Semaphore::test() noexcept {
     return value_;
 }
 
-void agm::Semaphore::waitConsume() throw() {
+void agm::Semaphore::waitConsume() noexcept {
     std::unique_lock<std::mutex> ul(mutex_);
     while (value_ == false) {
         cond_.wait(ul);
@@ -31,7 +31,7 @@ void agm::Semaphore::waitConsume() throw() {
     value_ = false;
 }
 
-void agm::Semaphore::waitPreserve() throw() {
+void agm::Semaphore::waitPreserve() noexcept {
     std::unique_lock<std::mutex> ul(mutex_);
     while (value_ == false) {
         cond_.wait(ul);
@@ -40,7 +40,7 @@ void agm::Semaphore::waitPreserve() throw() {
     //value_ = false;
 }
 
-void agm::Semaphore::signal() throw() {
+void agm::Semaphore::signal() noexcept {
     /*
     it sure looks weird to grab a lock simply
     to set a boolean.

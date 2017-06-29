@@ -25,7 +25,7 @@ namespace {
         TrunkImpl() = default;
         TrunkImpl(const TrunkImpl &) = delete;
 
-        virtual ~TrunkImpl() throw() {
+        virtual ~TrunkImpl() noexcept {
             delete data_;
         }
 
@@ -35,16 +35,16 @@ namespace {
     };
 }
 
-Trunk::Trunk() throw() :
+Trunk::Trunk() noexcept :
     Container("Trunk") {
 }
 
-Trunk::~Trunk() throw() {
+Trunk::~Trunk() noexcept {
 }
 
 Trunk *Trunk::create(
     int size
-) throw() {
+) noexcept {
     auto impl = new(std::nothrow) TrunkImpl;
     impl->size_ = size;
     impl->data_ = new(std::nothrow) char[size];
@@ -54,7 +54,7 @@ Trunk *Trunk::create(
 /*
 return the size of the buffer.
 */
-int Trunk::getSize() throw() {
+int Trunk::getSize() noexcept {
     auto impl = (TrunkImpl *) this;
     return impl->size_;
 }
@@ -64,7 +64,7 @@ overwrites whatever was in the trunk.
 */
 void Trunk::putString(
     const char *buffer
-) throw() {
+) noexcept {
     auto impl = (TrunkImpl *) this;
     std::lock_guard<std::mutex> lock(impl->mutex_);
     agm::string::copy(impl->data_, impl->size_, buffer);
@@ -77,7 +77,7 @@ the string in the trunk is preserved.
 void Trunk::getString(
     char *buffer,
     int size
-) const throw() {
+) const noexcept {
     auto impl = (TrunkImpl *) this;
     std::lock_guard<std::mutex> lock(impl->mutex_);
     agm::string::copy(buffer, size, impl->data_);

@@ -26,7 +26,7 @@ namespace {
 
     class Bob : public agm::Thread {
     public:
-        Bob() throw() : Thread("Bob") {
+        Bob() noexcept : Thread("Bob") {
         }
 
         virtual ~Bob() = default;
@@ -34,13 +34,13 @@ namespace {
         DoubleBuffer *db_= nullptr;
         int size_ = 0;
 
-        virtual void begin() throw() {
+        virtual void begin() noexcept {
             LOG_VERBOSE("Bob");
 
             size_ = db_->getSize();
         }
 
-        virtual void run() throw() {
+        virtual void run() noexcept {
             LOG("Bob acquires a buffer.");
             auto ptr = db_->acquire(1);
             agm::sleep::milliseconds(1000);
@@ -58,7 +58,7 @@ namespace {
             agm::master::setDone();
         }
 
-        virtual void end() throw() {
+        virtual void end() noexcept {
             LOG_VERBOSE("Bob");
         }
     };
@@ -66,7 +66,7 @@ namespace {
 
 agm::Thread *createBob(
     DoubleBuffer *db
-) throw() {
+) noexcept {
     auto th = new(std::nothrow) Bob;
     th->db_ = db;
     return th;

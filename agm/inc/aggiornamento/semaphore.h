@@ -23,10 +23,10 @@ namespace agm {
         Semaphore(const Semaphore &) = delete;
         ~Semaphore() = default;
 
-        bool test() throw();
-        void waitConsume() throw();
-        void waitPreserve() throw();
-        void signal() throw();
+        bool test() noexcept;
+        void waitConsume() noexcept;
+        void waitPreserve() noexcept;
+        void signal() noexcept;
 
     private:
         bool value_ = false;

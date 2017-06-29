@@ -14,13 +14,13 @@ implementation of utilities and platform abstractions.
 
 void agm::sleep::milliseconds(
     int ms
-) throw() {
+) noexcept {
     std::this_thread::sleep_for(std::chrono::milliseconds(ms));
 }
 
 void agm::sleep::seconds(
     int secs
-) throw() {
+) noexcept {
     std::this_thread::sleep_for(std::chrono::seconds(secs));
 }
 
@@ -30,7 +30,7 @@ void agm::sleep::seconds(
 std::ostream & operator<<(
     std::ostream &s,
     const std::string &str
-) throw() {
+) noexcept {
     s << str.c_str();
     return s;
 }

@@ -57,41 +57,41 @@ the easy way is to put all frames into an mro.
 
 class Mro : public agm::Container {
 protected:
-    Mro() throw();
+    Mro() noexcept;
 public:
     Mro(const Mro &) = delete;
-    virtual ~Mro() throw();
+    virtual ~Mro() noexcept;
 
     /*
     master thread creates the mro.
     master thread deletes the mro.
     */
-    static Mro *create(int size) throw();
+    static Mro *create(int size) noexcept;
 
     /*
     returns the size of the buffer.
     */
-    int getSize() throw();
+    int getSize() noexcept;
 
     /*
     returns an empty buffer.
     marks it "filling".
     */
-    char *getEmpty() throw();
+    char *getEmpty() noexcept;
 
     /*
     full buffers are marked empty.
     changes filling buffers to full.
     signals the consumer thread.
     */
-    void putFull() throw();
+    void putFull() noexcept;
 
     /*
     gets a full buffer.
     marks it "emptying".
     returns null if no buffer is full.
     */
-    char *getFull() throw();
+    char *getFull() noexcept;
 
     /*
     gets a full buffer.
@@ -99,10 +99,10 @@ public:
     blocks if no buffer is full until
     a full buffer is put.
     */
-    char *getFullWait() throw();
+    char *getFullWait() noexcept;
 
     /*
     changes emptying buffers to empty.
     */
-    void putEmpty() throw();
+    void putEmpty() noexcept;
 };

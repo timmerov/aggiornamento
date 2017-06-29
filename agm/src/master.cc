@@ -25,19 +25,19 @@ namespace {
         std::mutex mutex_;
         std::condition_variable done_cv_;
 
-        static Master *getSingleton() throw() {
+        static Master *getSingleton() noexcept {
             static Master g_singleton;
             return &g_singleton;
         };
     };
 }
 
-bool agm::master::isDone() throw() {
+bool agm::master::isDone() noexcept {
     auto master = Master::getSingleton();
     return master->done_;
 }
 
-void agm::master::setDone() throw() {
+void agm::master::setDone() noexcept {
     auto master = Master::getSingleton();
     {
         std::unique_lock<std::mutex> lock(master->mutex_);
@@ -46,7 +46,7 @@ void agm::master::setDone() throw() {
     master->done_cv_.notify_all();
 }
 
-void agm::master::waitDone() throw() {
+void agm::master::waitDone() noexcept {
     auto master = Master::getSingleton();
     std::unique_lock<std::mutex> lock(master->mutex_);
     while (master->done_ == false) {

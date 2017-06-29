@@ -69,13 +69,13 @@ namespace {
 
     class MroImpl : public Mro {
     public:
-        MroImpl() throw() {
+        MroImpl() noexcept {
             data_[0] = nullptr;
         }
 
         MroImpl(const MroImpl &) = delete;
 
-        virtual ~MroImpl() throw() {
+        virtual ~MroImpl() noexcept {
             delete[] data_[0];
         }
 
@@ -87,16 +87,16 @@ namespace {
     };
 }
 
-Mro::Mro() throw() :
+Mro::Mro() noexcept :
     agm::Container("MostRecentOut") {
 }
 
-Mro::~Mro() throw() {
+Mro::~Mro() noexcept {
 }
 
 Mro *Mro::create(
     int size
-) throw() {
+) noexcept {
     auto impl = new(std::nothrow) MroImpl;
     auto stride = (size + 15) / 16 * 16;
     auto size3 = 3*stride;
@@ -113,7 +113,7 @@ Mro *Mro::create(
 /*
 returns the size of the buffer.
 */
-int Mro::getSize() throw() {
+int Mro::getSize() noexcept {
     auto impl = (MroImpl *) this;
     return impl->size_;
 }
@@ -122,7 +122,7 @@ int Mro::getSize() throw() {
 returns an empty buffer.
 marks it "filling".
 */
-char *Mro::getEmpty() throw() {
+char *Mro::getEmpty() noexcept {
     auto impl = (MroImpl *) this;
     char *ptr = nullptr;
     {
@@ -143,7 +143,7 @@ full buffers are marked empty.
 changes filling buffers to full.
 signals the consumer thread.
 */
-void Mro::putFull() throw() {
+void Mro::putFull() noexcept {
     auto impl = (MroImpl *) this;
     {
         std::unique_lock<std::mutex> lock(impl->mutex_);
@@ -165,7 +165,7 @@ gets a full buffer.
 marks it "emptying".
 returns null if no buffer is full.
 */
-char *Mro::getFull() throw() {
+char *Mro::getFull() noexcept {
     auto impl = (MroImpl *) this;
     char *ptr = nullptr;
     {
@@ -187,7 +187,7 @@ marks it "emptying".
 blocks if no buffer is full until
 a full buffer is put.
 */
-char *Mro::getFullWait() throw() {
+char *Mro::getFullWait() noexcept {
     auto impl = (MroImpl *) this;
     char *ptr = nullptr;
     {
@@ -212,7 +212,7 @@ char *Mro::getFullWait() throw() {
 /*
 changes emptying buffers to empty.
 */
-void Mro::putEmpty() throw() {
+void Mro::putEmpty() noexcept {
     auto impl = (MroImpl *) this;
     {
         std::unique_lock<std::mutex> lock(impl->mutex_);

@@ -23,32 +23,32 @@ there is no signalling.
 
 class Trunk : public agm::Container {
 protected:
-    Trunk() throw();
+    Trunk() noexcept;
 public:
     Trunk(const Trunk &) = delete;
-    virtual ~Trunk() throw();
+    virtual ~Trunk() noexcept;
 
     /*
     master thread creates the trunk.
     master thread deletes the trunk.
     */
-    static Trunk *create(int size) throw();
+    static Trunk *create(int size) noexcept;
 
     /*
     return the size of the buffer.
     */
-    int getSize() throw();
+    int getSize() noexcept;
 
     /*
     overwrites whatever was in the trunk.
     */
-    void putString(const char *buffer) throw();
+    void putString(const char *buffer) noexcept;
 
     /*
     copies the string from the trunk.
     the string in the trunk is preserved.
     */
-    void getString(char *buffer, int size) const throw();
+    void getString(char *buffer, int size) const noexcept;
 
     /*
     template divines size of getString buffer
@@ -56,7 +56,7 @@ public:
     template <int size>
     void getString(
        char (&buffer)[size]
-    ) throw() {
+    ) noexcept {
         getString(buffer, size);
     }
 
@@ -65,6 +65,6 @@ public:
     unblock threads.
     we cannot block threads.
     **
-    virtual void unblock() throw();
+    virtual void unblock() noexcept;
     */
 };

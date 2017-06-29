@@ -26,19 +26,19 @@ any container has been deleted.
 namespace agm {
     class Container {
     public:
-        Container(const char *name) throw();
+        Container(const char *name) noexcept;
         Container(const Container &) = delete;
-        virtual ~Container() throw();
+        virtual ~Container() noexcept;
 
         /*
         returns the name of the container.
         */
-        std::string getName() const throw();
+        std::string getName() const noexcept;
 
         /*
         called by master thread.
         */
-        virtual void init() throw() {
+        virtual void init() noexcept {
         }
 
         /*
@@ -47,13 +47,13 @@ namespace agm {
         for data stored in this container.
         stop blocking threads forever.
         */
-        virtual void unblock() throw() {
+        virtual void unblock() noexcept {
         }
 
         /*
         called by master thread.
         */
-        virtual void exit() throw() {
+        virtual void exit() noexcept {
         }
 
     private:

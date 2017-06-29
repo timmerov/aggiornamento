@@ -27,12 +27,12 @@ namespace {
         std::stringstream str_;
     };
 
-    LogStreams *getLogStreams() throw() {
+    LogStreams *getLogStreams() noexcept {
         static LogStreams g_log_streams;
         return &g_log_streams;
     }
 
-    std::mutex *getLogMutex() throw() {
+    std::mutex *getLogMutex() noexcept {
         static std::mutex g_mutex;
         return &g_mutex;
     }
@@ -41,7 +41,7 @@ namespace {
         int index,
         const char *ptr,
         int count
-    ) throw() {
+    ) noexcept {
         std::string s;
         s.reserve(4+1+32*3+32);
         static const char hexdigits[] = "0123456789ABCDEF";
@@ -74,33 +74,33 @@ namespace {
     }
 }
 
-void agm::log::init(const char *filename) throw() {
+void agm::log::init(const char *filename) noexcept {
     auto ls = getLogStreams();
     if (ls->file_.is_open() == false) {
         ls->file_.open(filename, std::ios::out | std::ios::trunc);
     }
 }
 
-void agm::log::exit() throw() {
+void agm::log::exit() noexcept {
     auto ls = getLogStreams();
     ls->file_.close();
 }
 
-std::ostream *agm::log::getStream() throw() {
+std::ostream *agm::log::getStream() noexcept {
     auto ls = getLogStreams();
     return &ls->str_;
 }
 
 agm::log::AsHex::AsHex(
     int hex
-) throw() :
+) noexcept :
     value_(hex) {
 }
 
 void agm::log::bytes(
     const void *vp,
     int size
-) throw() {
+) noexcept {
     auto ptr = (const char *) vp;
     for (auto i = 0; size > 0; i += 24) {
         auto n = std::min(size, 24);
@@ -113,7 +113,7 @@ void agm::log::bytes(
 std::ostream & operator<<(
     std::ostream &s,
     const agm::log::Lock &lock
-) throw() {
+) noexcept {
     (void) lock;
     auto m = getLogMutex();
     m->lock();
@@ -123,7 +123,7 @@ std::ostream & operator<<(
 std::ostream & operator<<(
     std::ostream &s,
     const agm::log::Unlock &unlock
-) throw() {
+) noexcept {
     (void) unlock;
     auto ls = getLogStreams();
     // write to the file.
@@ -143,7 +143,7 @@ std::ostream & operator<<(
 std::ostream & operator<<(
     std::ostream &s,
     const agm::log::AsHex &hex
-) throw() {
+) noexcept {
     s << "0x" << std::hex << hex.value_ << std::dec;
     return s;
 }

@@ -39,7 +39,7 @@ namespace {
         MessageQueueImpl() = default;
         MessageQueueImpl(const MessageQueueImpl &) = delete;
 
-        virtual ~MessageQueueImpl() throw() {
+        virtual ~MessageQueueImpl() noexcept {
             delete[] data_;
         }
 
@@ -50,11 +50,11 @@ namespace {
     };
 }
 
-MessageQueue::MessageQueue() throw() :
+MessageQueue::MessageQueue() noexcept :
     agm::Container("MessageQueue") {
 }
 
-MessageQueue::~MessageQueue() throw() {
+MessageQueue::~MessageQueue() noexcept {
 }
 
 /*
@@ -64,7 +64,7 @@ master thread deletes the double buffer.
 MessageQueue *MessageQueue::create(
     int message_size,  // size of one message
     int max_count      // maximum number of messages
-) throw() {
+) noexcept {
     auto impl = new(std::nothrow) MessageQueueImpl;
     impl->message_size_ = message_size;
     impl->empty_fifo_ = Fifo::create(max_count);
@@ -87,7 +87,7 @@ MessageQueue *MessageQueue::create(
 /*
 returns message_size passed to the constructor.
 */
-int MessageQueue::getMessageSize() throw() {
+int MessageQueue::getMessageSize() noexcept {
     auto impl = (MessageQueueImpl *) this;
     return impl->message_size_;
 }
@@ -95,7 +95,7 @@ int MessageQueue::getMessageSize() throw() {
 /*
 returns max_count passed to the constructor.
 */
-int MessageQueue::getMaxCount() throw() {
+int MessageQueue::getMaxCount() noexcept {
     auto impl = (MessageQueueImpl *) this;
     auto count = impl->empty_fifo_->getMaxCount();
     return count;
@@ -107,7 +107,7 @@ returns false if the fifo is full.
 */
 bool MessageQueue::putEmpty(
     char *ptr
-) throw() {
+) noexcept {
     auto impl = (MessageQueueImpl *) this;
     auto fifo = impl->empty_fifo_;
     auto result = fifo->put(ptr);
@@ -118,7 +118,7 @@ bool MessageQueue::putEmpty(
 get an element from the empty fifo.
 returns nullptr immediately if the fifo is empty.
 */
-char *MessageQueue::getEmpty() throw() {
+char *MessageQueue::getEmpty() noexcept {
     auto impl = (MessageQueueImpl *) this;
     auto fifo = impl->empty_fifo_;
     auto ptr = fifo->get();
@@ -129,7 +129,7 @@ char *MessageQueue::getEmpty() throw() {
 get an element from the empty fifo.
 waits for an element to be pushed if the fifo is empty.
 */
-char *MessageQueue::getEmptyWait() throw() {
+char *MessageQueue::getEmptyWait() noexcept {
     auto impl = (MessageQueueImpl *) this;
     auto fifo = impl->empty_fifo_;
     auto ptr = fifo->getWait();
@@ -142,7 +142,7 @@ returns false if the fifo is full.
 */
 bool MessageQueue::putMessage(
     char *ptr
-) throw() {
+) noexcept {
     auto impl = (MessageQueueImpl *) this;
     auto fifo = impl->message_fifo_;
     auto result = fifo->put(ptr);
@@ -153,7 +153,7 @@ bool MessageQueue::putMessage(
 get an element from the message fifo.
 returns nullptr immediately if the fifo is empty.
 */
-char *MessageQueue::getMessage() throw() {
+char *MessageQueue::getMessage() noexcept {
     auto impl = (MessageQueueImpl *) this;
     auto fifo = impl->message_fifo_;
     auto ptr = fifo->get();
@@ -164,7 +164,7 @@ char *MessageQueue::getMessage() throw() {
 get an element from the empty fifo.
 waits for an element to be pushed if the fifo is empty.
 */
-char *MessageQueue::getMessageWait() throw() {
+char *MessageQueue::getMessageWait() noexcept {
     auto impl = (MessageQueueImpl *) this;
     auto fifo = impl->message_fifo_;
     auto ptr = fifo->getWait();
@@ -174,7 +174,7 @@ char *MessageQueue::getMessageWait() throw() {
 /*
 unblock all waiting threads.
 */
-void MessageQueue::unblock() throw() {
+void MessageQueue::unblock() noexcept {
     auto impl = (MessageQueueImpl *) this;
     impl->empty_fifo_->unblock();
     impl->message_fifo_->unblock();

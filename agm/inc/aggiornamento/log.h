@@ -44,9 +44,9 @@ disable symbols browser.
 namespace agm {
     // standardize logging.
     namespace log {
-        void init(const char *filename) throw();
-        void exit() throw();
-        std::ostream *getStream() throw();
+        void init(const char *filename) noexcept;
+        void exit() noexcept;
+        std::ostream *getStream() noexcept;
 
         // clever use of a lock to serialize logging.
         class Lock { public: };
@@ -57,12 +57,12 @@ namespace agm {
         // log int's in hexadecimal format
         class AsHex {
         public:
-            AsHex(int hex) throw();
+            AsHex(int hex) noexcept;
             int value_;
         };
 
         // log bytes in canonical form
-        void bytes(const void *bytes, int size) throw();
+        void bytes(const void *bytes, int size) noexcept;
     }
 }
 
@@ -70,10 +70,10 @@ namespace agm {
 clever use of a lock to serialize logging.
 we basically insert a lock and unlock into the stream.
 */
-std::ostream & operator<<(std::ostream &s, const agm::log::Lock &lock) throw();
-std::ostream & operator<<(std::ostream &s, const agm::log::Unlock &unlock) throw();
+std::ostream & operator<<(std::ostream &s, const agm::log::Lock &lock) noexcept;
+std::ostream & operator<<(std::ostream &s, const agm::log::Unlock &unlock) noexcept;
 
 /*
 log int's in hexadecimal format
 */
-std::ostream & operator<<(std::ostream &s, const agm::log::AsHex &x) throw();
+std::ostream & operator<<(std::ostream &s, const agm::log::AsHex &x) noexcept;

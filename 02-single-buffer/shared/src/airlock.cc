@@ -49,7 +49,7 @@ namespace {
         AirlockImpl() = default;
         AirlockImpl(const AirlockImpl &) = delete;
 
-        virtual ~AirlockImpl() throw() {
+        virtual ~AirlockImpl() noexcept {
             delete[] data_;
         }
 
@@ -59,16 +59,16 @@ namespace {
     };
 }
 
-Airlock::Airlock() throw() :
+Airlock::Airlock() noexcept :
     agm::Container("Airlock") {
 }
 
-Airlock::~Airlock() throw() {
+Airlock::~Airlock() noexcept {
 }
 
 Airlock *Airlock::create(
     int size
-) throw() {
+) noexcept {
     auto impl = new(std::nothrow) AirlockImpl;
 
     impl->size_ = size;
@@ -83,7 +83,7 @@ Airlock *Airlock::create(
 /*
 returns the size of the buffer.
 */
-int Airlock::getSize() throw() {
+int Airlock::getSize() noexcept {
     auto impl = (AirlockImpl *) this;
     return impl->size_;
 }
@@ -94,7 +94,7 @@ blocks if another thread has exclusive access.
 */
 char *Airlock::acquire(
     int side
-) throw() {
+) noexcept {
     if (side != 0 && side != 1) {
         return nullptr;
     }
@@ -110,7 +110,7 @@ release the buffer so it can be used by other threads
 */
 void Airlock::release(
     int side
-) throw() {
+) noexcept {
     if (side != 0 && side != 1) {
         return;
     }
@@ -123,7 +123,7 @@ void Airlock::release(
 /*
 unblock threads.
 */
-void Airlock::unblock() throw() {
+void Airlock::unblock() noexcept {
     release(0);
     release(1);
 }

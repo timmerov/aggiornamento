@@ -27,31 +27,31 @@ interface funcions.
 namespace {
     class Alice : public agm::Thread {
     public:
-        Alice() throw() : Thread("Alice") {
+        Alice() noexcept : Thread("Alice") {
         }
 
-        virtual ~Alice() throw() {
+        virtual ~Alice() noexcept {
             LOG_VERBOSE("Alice");
         }
 
         int counter_ = 0;
 
-        virtual void begin() throw() {
+        virtual void begin() noexcept {
             LOG_VERBOSE("Alice");
         }
 
-        virtual void runOnce() throw() {
+        virtual void runOnce() noexcept {
             ++counter_;
             LOG("Alice produces " << counter_);
             agm::sleep::milliseconds(900);
         }
 
-        virtual void end() throw() {
+        virtual void end() noexcept {
             LOG_VERBOSE("Alice");
         }
     };
 }
 
-agm::Thread *createAlice() throw() {
+agm::Thread *createAlice() noexcept {
     return new(std::nothrow) Alice;
 }

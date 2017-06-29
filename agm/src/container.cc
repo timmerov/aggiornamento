@@ -28,13 +28,13 @@ any container has been deleted.
 
 agm::Container::Container(
     const char *name
-) throw() :
+) noexcept :
     name_(name) {
 }
 
-agm::Container::~Container() throw() {
+agm::Container::~Container() noexcept {
 }
 
-std::string agm::Container::getName() const throw() {
+std::string agm::Container::getName() const noexcept {
     return name_;
 }

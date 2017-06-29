@@ -37,33 +37,33 @@ public:
     Fifo uses a fixed size array of pointers to elements.
     max_count is the maximum number of elements the fifo can hold.
     */
-    static Fifo *create(int max_count) throw();
+    static Fifo *create(int max_count) noexcept;
 
     /*
     returns max_count passed to the constructor.
     */
-    int getMaxCount() throw();
+    int getMaxCount() noexcept;
 
     /*
     add an element to the fifo.
     returns false if the fifo is full.
     */
-    bool put(char *ptr) throw();
+    bool put(char *ptr) noexcept;
 
     /*
     get an element from the fifo.
     returns nullptr immediately if the fifo is empty.
     */
-    char *get() throw();
+    char *get() noexcept;
 
     /*
     get an element from the fifo.
     waits for an element to be pushed if the fifo is empty.
     */
-    char *getWait() throw();
+    char *getWait() noexcept;
 
     /*
     unblock all waiting threads.
     */
-    void unblock() throw();
+    void unblock() noexcept;
 };

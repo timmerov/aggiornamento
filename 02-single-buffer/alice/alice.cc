@@ -28,7 +28,7 @@ namespace {
 
     class Alice : public agm::Thread {
     public:
-        Alice() throw() : Thread("Alice") {
+        Alice() noexcept : Thread("Alice") {
         }
 
         virtual ~Alice() = default;
@@ -40,7 +40,7 @@ namespace {
         Airlock *airlock_ = nullptr;
         int airlock_size_ = 0;
 
-        virtual void begin() throw() {
+        virtual void begin() noexcept {
             LOG("Alice is in the spaceship at the airlock.");
 
             trunk_size_ = trunk_->getSize();
@@ -49,7 +49,7 @@ namespace {
             airlock_size_ = airlock_->getSize();
         }
 
-        virtual void run() throw() {
+        virtual void run() noexcept {
             LOG("Alice puts " << kCleanSocks << " into the trunk");
             trunk_->putString(kCleanSocks);
             agm::sleep::milliseconds(1500);
@@ -74,7 +74,7 @@ namespace {
             agm::master::setDone();
         }
 
-        virtual void end() throw() {
+        virtual void end() noexcept {
             LOG("Alice went home.");
 
             trunk_size_ = 0;
@@ -87,7 +87,7 @@ namespace {
 agm::Thread *createAlice(
     Airlock *airlock,
     Trunk *trunk
-) throw() {
+) noexcept {
     auto th = new(std::nothrow) Alice;
     th->airlock_ = airlock;
     th->trunk_ = trunk;

@@ -81,7 +81,7 @@ then decide if you really want to go unicorn hunting.
 
 int main(
     int argc, char *argv[]
-) throw() {
+) noexcept {
     (void) argc;
     (void) argv;
 

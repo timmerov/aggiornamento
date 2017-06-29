@@ -77,7 +77,7 @@ namespace {
         FifoImpl() = default;
         FifoImpl(const FifoImpl &) = delete;
 
-        virtual ~FifoImpl() throw() {
+        virtual ~FifoImpl() noexcept {
             delete[] data_;
         }
 
@@ -107,7 +107,7 @@ maxCount is the maximum number of elements the fifo can hold.
 */
 Fifo *Fifo::create(
     int maxCount
-) throw() {
+) noexcept {
     auto impl = new(std::nothrow) FifoImpl;
     auto size = maxCount + 1;
     impl->size_ = size;
@@ -120,7 +120,7 @@ Fifo *Fifo::create(
 /*
 returns maxCount passed to the constructor.
 */
-int Fifo::getMaxCount() throw() {
+int Fifo::getMaxCount() noexcept {
     auto impl = (FifoImpl *) this;
     auto count = impl->size_ - 1;
     return count;
@@ -132,7 +132,7 @@ returns false if the fifo is full.
 */
 bool Fifo::put(
     char *ptr
-) throw() {
+) noexcept {
     if (ptr == nullptr) {
         return false;
     }
@@ -174,7 +174,7 @@ bool Fifo::put(
 get an element from the fifo.
 returns nullptr immediately if the fifo is empty.
 */
-char *Fifo::get() throw() {
+char *Fifo::get() noexcept {
     auto impl = (FifoImpl *) this;
     char *ptr = nullptr;
     {
@@ -194,7 +194,7 @@ char *Fifo::get() throw() {
 get an element from the fifo.
 waits for an element to be pushed if the fifo is empty.
 */
-char *Fifo::getWait() throw() {
+char *Fifo::getWait() noexcept {
     auto impl = (FifoImpl *) this;
     char *ptr = nullptr;
     {
@@ -225,7 +225,7 @@ char *Fifo::getWait() throw() {
 /*
 unblock waiting threads.
 */
-void Fifo::unblock() throw() {
+void Fifo::unblock() noexcept {
     auto impl = (FifoImpl *) this;
     impl->cancel_ = true;
     impl->cv_.notify_all();

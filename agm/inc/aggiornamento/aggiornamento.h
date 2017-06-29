@@ -74,12 +74,12 @@ namespace agm {
 #endif
 
     namespace sleep {
-        void milliseconds(int ms) throw();
-        void seconds(int secs) throw();
+        void milliseconds(int ms) noexcept;
+        void seconds(int secs) noexcept;
     }
 }
 
 // this isn't in microsoft's version of c++11. weird.
 #if defined(AGM_WINDOWS)
-std::ostream & operator<<(std::ostream &s, const std::string &str) throw();
+std::ostream & operator<<(std::ostream &s, const std::string &str) noexcept;
 #endif

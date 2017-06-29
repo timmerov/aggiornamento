@@ -25,7 +25,7 @@ void agm::string::copy(
     char *dst,
     int dst_size,
     const char *src
-) throw() {
+) noexcept {
     char ch;
     do {
         --dst_size;
@@ -44,7 +44,7 @@ void agm::string::cat(
     char *dst,
     int dst_size,
     const char *src
-) throw() {
+) noexcept {
     auto len = strlen(dst);
     dst += len;
     dst_size -= (int) len;
@@ -60,7 +60,7 @@ because microsoft
 int agm::string::compare_case(
     const char *s1,
     const char *s2
-) throw() {
+) noexcept {
 #if defined(AGM_WINDOWS)
     return _strcmpi(s1, s2);
 #else
@@ -78,7 +78,7 @@ int agm::string::compare_case(
     const char *s1,
     const char *s2,
     int len
-) throw() {
+) noexcept {
 #if defined(AGM_WINDOWS)
     return _strnicmp(s1, s2, len);
 #else
@@ -96,7 +96,7 @@ char *agm::string::tokenize(
     char *token,
     const char *delimiters,
     char **context
-) throw() {
+) noexcept {
 #if defined(AGM_WINDOWS)
     return strtok_s(token, delimiters, context);
 #else
@@ -116,7 +116,7 @@ int agm::string::printf(
     int size,
     const char *format,
     ...
-) throw() {
+) noexcept {
     va_list args;
     va_start(args, format);
     auto ret = agm::string::vprintf(buffer, size, format, args );
@@ -138,7 +138,7 @@ int agm::string::vprintf(
     int size,
     const char *format,
     va_list args
-) throw() {
+) noexcept {
 #if defined(AGM_WINDOWS)
     vsprintf_s(buffer, size, format, args);
     return _vscprintf(format, args);

@@ -23,7 +23,7 @@ implement the bob thread.
 namespace {
     class Bob : public agm::Thread {
     public:
-        Bob() throw() : Thread("Bob") {
+        Bob() noexcept : Thread("Bob") {
         }
 
         virtual ~Bob() = default;
@@ -31,11 +31,11 @@ namespace {
         Mro *mro_ = nullptr;
         bool first_pass_ = true;
 
-        virtual void begin() throw() {
+        virtual void begin() noexcept {
             LOG_VERBOSE("Bob");
         }
 
-        virtual void runOnce() throw() {
+        virtual void runOnce() noexcept {
             if (first_pass_) {
                 first_pass_ = false;
                 LOG("Bob is waiting.");
@@ -53,7 +53,7 @@ namespace {
             agm::sleep::milliseconds(1000);
         }
 
-        virtual void end() throw() {
+        virtual void end() noexcept {
             LOG_VERBOSE("Bob");
         }
     };
@@ -61,7 +61,7 @@ namespace {
 
 agm::Thread *createBob(
     Mro *mro
-) throw() {
+) noexcept {
     auto th = new(std::nothrow) Bob;
     th->mro_ = mro;
     return th;

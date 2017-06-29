@@ -11,8 +11,8 @@ tell the master thread to stop all threads.
 
 namespace agm {
     namespace master {
-        bool isDone() throw();
-        void setDone() throw();
-        void waitDone() throw();
+        bool isDone() noexcept;
+        void setDone() noexcept;
+        void waitDone() noexcept;
     }
 }

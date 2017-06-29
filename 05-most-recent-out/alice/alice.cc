@@ -24,7 +24,7 @@ implement the alice thread.
 namespace {
     class Alice : public agm::Thread {
     public:
-        Alice() throw() : Thread("Alice") {
+        Alice() noexcept : Thread("Alice") {
         }
 
         virtual ~Alice() = default;
@@ -33,11 +33,11 @@ namespace {
         int size_ = 0;
         int counter_ = 0;
 
-        virtual void begin() throw() {
+        virtual void begin() noexcept {
             size_ = mro_->getSize();
         }
 
-        virtual void runOnce() throw() {
+        virtual void runOnce() noexcept {
             if (counter_ == 0) {
                 LOG("Alice is snoozing.");
                 agm::sleep::milliseconds(1000);
@@ -52,7 +52,7 @@ namespace {
             agm::sleep::milliseconds(1000*24/60);
         }
 
-        virtual void end() throw() {
+        virtual void end() noexcept {
             LOG_VERBOSE("Alice");
         }
     };
@@ -60,7 +60,7 @@ namespace {
 
 agm::Thread *createAlice(
     Mro *mro
-) throw() {
+) noexcept {
     auto th = new(std::nothrow) Alice;
     th->mro_ = mro;
     return th;

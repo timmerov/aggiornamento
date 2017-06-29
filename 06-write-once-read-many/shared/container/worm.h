@@ -38,47 +38,47 @@ for(;;) {
 
 class Worm : public agm::Container {
 protected:
-    Worm() throw();
+    Worm() noexcept;
 public:
     Worm(const Worm &) = delete;
-    virtual ~Worm() throw();
+    virtual ~Worm() noexcept;
 
     /*
     master thread creates the worm.
     master thread deletes the worm.
     */
-    static Worm *create(int size) throw();
+    static Worm *create(int size) noexcept;
 
     /*
     returns the size of the buffer.
     */
-    int getSize() throw();
+    int getSize() noexcept;
 
     /*
     returns the write buffer.
     */
-    char *getWriteBuffer() throw();
+    char *getWriteBuffer() noexcept;
 
     /*
     swap the read/write buffers and update the state.
     */
-    void swap() throw();
+    void swap() noexcept;
 
     /*
     returns the state of the buffers.
     required to get the read buffer
     and to detect read failures.
     */
-    int getState() throw();
+    int getState() noexcept;
 
     /*
     returns true if the current state is the same.
     returns false if the current state changed.
     */
-    bool checkState(int state) throw();
+    bool checkState(int state) noexcept;
 
     /*
     returns the read buffer.
     */
-    const char *getReadBuffer(int state) throw();
+    const char *getReadBuffer(int state) noexcept;
 };

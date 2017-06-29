@@ -25,7 +25,7 @@ implement the bob thread.
 namespace {
     class Bob : public agm::Thread {
     public:
-        Bob() throw() : Thread("Bob") {
+        Bob() noexcept : Thread("Bob") {
         }
 
         virtual ~Bob() = default;
@@ -33,11 +33,11 @@ namespace {
         Worm *worm_ = nullptr;
         std::string old_str_;
 
-        virtual void begin() throw() {
+        virtual void begin() noexcept {
             LOG_VERBOSE("Bob");
         }
 
-        virtual void runOnce() throw() {
+        virtual void runOnce() noexcept {
             std::string new_str;
             for(;;) {
                 auto state = worm_->getState();
@@ -57,7 +57,7 @@ namespace {
             // but for this test, we busy loop.
         }
 
-        virtual void end() throw() {
+        virtual void end() noexcept {
             LOG_VERBOSE("Bob");
         }
     };
@@ -65,7 +65,7 @@ namespace {
 
 agm::Thread *createBob(
     Worm *worm
-) throw() {
+) noexcept {
     auto th = new(std::nothrow) Bob;
     th->worm_ = worm;
     return th;

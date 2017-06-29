@@ -26,7 +26,7 @@ namespace {
 
     class Alice : public agm::Thread {
     public:
-        Alice() throw() : Thread("Alice") {
+        Alice() noexcept : Thread("Alice") {
         }
 
         virtual ~Alice() = default;
@@ -34,13 +34,13 @@ namespace {
         DoubleBuffer *db_ = nullptr;
         int size_ = 0;
 
-        virtual void begin() throw() {
+        virtual void begin() noexcept {
             LOG_VERBOSE("Alice");
 
             size_ = db_->getSize();
         }
 
-        virtual void run() throw() {
+        virtual void run() noexcept {
             LOG("Alice acquires a buffer.");
             auto ptr = db_->acquire(0);
             agm::string::copy(ptr, size_, kSugarSpice);
@@ -61,7 +61,7 @@ namespace {
             agm::master::waitDone();
         }
 
-        virtual void end() throw() {
+        virtual void end() noexcept {
             LOG_VERBOSE("Alice");
         }
     };
@@ -69,7 +69,7 @@ namespace {
 
 agm::Thread *createAlice(
     DoubleBuffer *db
-) throw() {
+) noexcept {
     auto th = new(std::nothrow) Alice;
     th->db_ = db;
     return th;

@@ -26,7 +26,7 @@ namespace {
 
     class Alice : public agm::Thread {
     public:
-        Alice() throw() : Thread("Alice") {
+        Alice() noexcept : Thread("Alice") {
         }
 
         virtual ~Alice() = default;
@@ -34,13 +34,13 @@ namespace {
         MessageQueue *message_queue_ = nullptr;
         int size_ = 0;
 
-        virtual void begin() throw() {
+        virtual void begin() noexcept {
             LOG_VERBOSE("Alice");
 
             size_ = message_queue_->getMessageSize();
         }
 
-        virtual void run() throw() {
+        virtual void run() noexcept {
             LOG("Alice gets an empty meessage from the queue.");
             auto ptr = message_queue_->getEmpty();
             agm::sleep::milliseconds(1000);
@@ -52,7 +52,7 @@ namespace {
             agm::master::setDone();
         }
 
-        virtual void end() throw() {
+        virtual void end() noexcept {
             LOG_VERBOSE("Alice");
         }
     };
@@ -60,7 +60,7 @@ namespace {
 
 agm::Thread *createAlice(
     MessageQueue *message_queue
-) throw() {
+) noexcept {
     auto th = new(std::nothrow) Alice;
     th->message_queue_ = message_queue;
     return th;
