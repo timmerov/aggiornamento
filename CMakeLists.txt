@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2012-2016 tim cotter. All rights reserved.
+# Copyright (C) 2012-2024 tim cotter. All rights reserved.
 #
 
 # search for "you need to"
@@ -14,6 +14,9 @@ include("${THIS_CMAKE_DIR}/scripts/preamble.txt")
 # more cmake boilerplate
 # unfortunately, we can't put this in preamble.
 cmake_minimum_required(VERSION ${THIS_CMAKE_VERSION})
+
+# set the project
+project(${THIS_PROJECT_NAME})
 
 # add the targets
 add_subdirectory(agm)

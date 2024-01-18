@@ -1,12 +1,11 @@
 #
-# Copyright (C) 2012-2016 tim cotter. All rights reserved.
+# Copyright (C) 2012-2024 tim cotter. All rights reserved.
 #
 
 # search for "you need to"
 
 # you need to set these.
 set(THIS_TARGET_NAME agm)
-set(THIS_LIB_PATH aggiornamento)
 
 # set the target.
 set(THIS_LIB_TYPE STATIC)
@@ -26,6 +25,11 @@ target_compile_definitions(${THIS_TARGET_NAME} PRIVATE AGM_TARGET=${THIS_TARGET_
 
 # add _d to the debug target name
 set_target_properties(${THIS_TARGET_NAME} PROPERTIES DEBUG_POSTFIX _d)
+
+# put the library in the agm/lib directory
+set_target_properties(${THIS_TARGET_NAME} PROPERTIES
+    ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/agm/lib
+)
 
 # add the include directores
 set(INCLUDES
