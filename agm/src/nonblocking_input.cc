@@ -44,8 +44,14 @@ void agm::NonBlockingInput::readInputThread(
         /** wait for the caller to consume the old input. **/
         nbi->empty_sem_.waitConsume();
 
-        /** get new input. **/
-        std::cin >> nbi->input_;
+        /**
+        get new input.
+        use getline because cin>>input strips whitespace.
+        both remove the trailing endline.
+        append one so a blank line is not empty.
+        **/
+        std::getline(std::cin, nbi->input_);
+        nbi->input_.append(1, '\n');
 
         /** tell the caller there's new input. **/
         nbi->full_sem_.signal();
