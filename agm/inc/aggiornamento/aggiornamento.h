@@ -77,6 +77,10 @@ namespace agm {
         void milliseconds(int ms) noexcept;
         void seconds(int secs) noexcept;
     }
+
+    namespace time {
+        agm::int64 microseconds() noexcept;
+    }
 }
 
 // this isn't in microsoft's version of c++11. weird.
