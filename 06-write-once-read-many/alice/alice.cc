@@ -40,7 +40,7 @@ namespace {
         virtual void runOnce() noexcept {
             auto ptr = worm_->getWriteBuffer();
             LOG("Alice puts " << counter_ << " into the worm.");
-            std::string s = std::move(std::to_string(counter_));
+            std::string s = std::to_string(counter_);
             ++counter_;
             agm::string::copy(ptr, size_, s.c_str());
             worm_->swap();

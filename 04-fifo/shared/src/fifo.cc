@@ -20,7 +20,7 @@ producers do not contend with consumers.
 and vice versa.
 
 the usage pattern assumes the caller will never
-try to put more elements into the firo than the
+try to put more elements into the fifo than the
 fifo will hold.
 put will never block.
 
@@ -112,7 +112,7 @@ Fifo *Fifo::create(
     auto size = maxCount + 1;
     impl->size_ = size;
     impl->head_ = 0;
-    impl->head_ = 0;
+    impl->tail_ = 0;
     impl->data_ = new(std::nothrow) char*[size];
     return impl;
 }

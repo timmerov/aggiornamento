@@ -45,7 +45,7 @@ namespace {
 
             auto ptr = mro_->getEmpty();
             LOG("Alice puts " << counter_ << " into the mro.");
-            std::string s = std::move(std::to_string(counter_));
+            std::string s = std::to_string(counter_);
             ++counter_;
             agm::string::copy(ptr, size_, s.c_str());
             mro_->putFull();
