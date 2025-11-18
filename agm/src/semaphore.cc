@@ -40,6 +40,36 @@ void agm::Semaphore::waitPreserve() noexcept {
     //value_ = false;
 }
 
+bool agm::Semaphore::waitForConsume(
+    int ms
+) noexcept {
+    std::unique_lock<std::mutex> ul(mutex_);
+    while (value_ == false) {
+        auto result = cond_.wait_for(ul, std::chrono::milliseconds(ms));
+        if (result == std::cv_status::timeout) {
+            return true;
+        }
+    }
+    // consume the signal
+    value_ = false;
+    return false;
+}
+
+bool agm::Semaphore::waitForPreserve(
+    int ms
+) noexcept {
+    std::unique_lock<std::mutex> ul(mutex_);
+    while (value_ == false) {
+        auto result = cond_.wait_for(ul, std::chrono::milliseconds(ms));
+        if (result == std::cv_status::timeout) {
+            return true;
+        }
+    }
+    // preserve the signal
+    //value_ = false;
+    return false;
+}
+
 void agm::Semaphore::signal() noexcept {
     /*
     it sure looks weird to grab a lock simply
