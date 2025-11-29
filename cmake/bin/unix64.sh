@@ -17,7 +17,7 @@ mkdir -p $BUILD_DIR-debug
 pushd $BUILD_DIR-debug
 echo Build is unix64 debug.
 $CMAKE_EXE \
-	-G "CodeBlocks - Unix Makefiles" \
+	-G "Unix Makefiles" \
 	-DCMAKE_BUILD_TYPE:STRING=Debug \
 	$options \
 	..
@@ -27,7 +27,7 @@ mkdir -p $BUILD_DIR-release
 pushd $BUILD_DIR-release
 echo Build is unix64 release.
 $CMAKE_EXE \
-        -G "CodeBlocks - Unix Makefiles" \
+        -G "Unix Makefiles" \
 	-DCMAKE_BUILD_TYPE:STRING=Release \
 	$options \
 	..
