@@ -13,16 +13,6 @@
 message("Creating project ${THIS_PROJECT_NAME}...")
 project(${THIS_PROJECT_NAME})
 
-# we want all projects to use the same version of cmake.
-# we'd like to put the cmake_minimum_required here.
-# but cmake ignores the command when it's in an included file.
-# dumbass thing.
-# so we do the next best thing.
-# set a variable here.
-# and call cmake_minimum_required from the top level CMakeLists.txt
-# wee.
-set(THIS_CMAKE_VERSION 3.22.1)
-
 # replace cmake's choice of builds with just debug and release
 set(CMAKE_CONFIGURATION_TYPES Debug Release CACHE STRING INTERNAL FORCE)
 

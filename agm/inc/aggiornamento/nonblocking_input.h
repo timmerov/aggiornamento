@@ -5,11 +5,6 @@ Copyright (C) 2012-2025 tim cotter. All rights reserved.
 /**
 NOTE: non-blecking input is a bit of a misnomer.
 it creates a thread that is immortal.
-when main returns, the c++ library is unwilling to kill or unblock the thread.
-which means your program won't end until you hit return one more time.
-which is dumb.
-as a work-around, use quick_exit(exit_code).
-it will silently kill all still-running threads.
 
 only one of these objects should ever be created.
 

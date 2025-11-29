@@ -8,12 +8,13 @@
 set(THIS_PROJECT_NAME aggiornamento)
 set(THIS_CMAKE_DIR "${CMAKE_SOURCE_DIR}/cmake")
 
-# cmake boilerplate
-include("${THIS_CMAKE_DIR}/scripts/preamble.txt")
-
 # more cmake boilerplate
 # unfortunately, we can't put this in preamble.
+set(THIS_CMAKE_VERSION 3.22.1)
 cmake_minimum_required(VERSION ${THIS_CMAKE_VERSION})
+
+# cmake boilerplate
+include("${THIS_CMAKE_DIR}/scripts/preamble.txt")
 
 # set the project
 project(${THIS_PROJECT_NAME})
