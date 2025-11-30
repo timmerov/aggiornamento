@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2012-2024 tim cotter. All rights reserved.
+# Copyright (C) 2012-2025 tim cotter. All rights reserved.
 #
 
 # search for "you need to"
@@ -18,6 +18,11 @@ file(GLOB_RECURSE THIS_HEADERS ${CMAKE_CURRENT_SOURCE_DIR}/*.h)
 
 # add the executable with source and includes in separate groups
 add_executable(${THIS_TARGET_NAME} ${THIS_SOURCE} ${THIS_HEADERS})
+
+# put the binary in bin.
+set_target_properties(${THIS_TARGET_NAME} PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin
+)
 
 # add _d to the debug target name
 set_target_properties(${THIS_TARGET_NAME} PROPERTIES DEBUG_POSTFIX _d)

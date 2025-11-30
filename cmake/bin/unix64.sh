@@ -34,4 +34,4 @@ $CMAKE_EXE \
 popd
 
 echo
-echo Codeblocks project and unix makefiles are in build-unix64-debug and build-unix64-release.
+echo Unix makefiles are in build-unix64-debug and build-unix64-release.

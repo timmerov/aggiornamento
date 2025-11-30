@@ -8,7 +8,7 @@ GEN_CMD=gen-$TARGET_CPU.sh
 CORES=-j$(grep -c ^processor /proc/cpuinfo)
 
 echo Building and installing third party products...
-. ./$GEN_CMD
+#. ./$GEN_CMD
 pushd $BUILD_DIR_DEBUG
 make $CORES
 popd
