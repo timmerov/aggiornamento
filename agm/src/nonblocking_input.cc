@@ -81,17 +81,24 @@ void agm::NonBlockingInput::readInputThread(
         nbi->empty_sem_.waitConsume();
 
         /** get new input using gnu readline library. **/
-        char *line = readline(nullptr);
-        if (line && line[0]) {
-            /** append to the input with a closing end line. **/
+        char *line = nullptr;
+        while (line == nullptr) {
+            line = readline(nullptr);
+        }
+
+        if (line[0]) {
+            /** append the non-trivial string to the input. **/
             nbi->input_ += line;
-            nbi->input_ += '\n';
+
             /** add it to the history. **/
             add_history(line);
         }
-        if (line) {
-            free(line);
-        }
+
+        /** append an end line. **/
+        nbi->input_ += '\n';
+
+        /** free the malloc'd buffer. **/
+        free(line);
 
         /** tell the caller there's new input. **/
         nbi->full_sem_.signal();
